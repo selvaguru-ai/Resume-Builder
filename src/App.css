@@ -1,0 +1,42 @@
+/* Fix for react-phone-input-2 dropdown text color */
+.react-tel-input .country-list {
+  background-color: #fff !important; /* white background */
+  color: #000 !important; /* black text */
+}
+
+.react-tel-input .country-list .country {
+  color: #000 !important; /* black country names */
+}
+
+.react-tel-input .country-list .country:hover {
+  background-color: #f8f9fa !important; /* light gray on hover */
+  color: #000 !important;
+}
+
+.lightbulb-icon:hover {
+  text-shadow: 0 0 5px #f1c40f, 0 0 10px #f1c40f, 0 0 20px #f1c40f,
+    0 0 30px #f1c40f, 0 0 40px #f39c12, 0 0 50px #f39c12;
+}
+
+.beating-arrow {
+  font-size: 3rem;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.beating-arrow:hover {
+  animation: beatArrow 0.6s infinite;
+}
+
+@keyframes beatArrow {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
