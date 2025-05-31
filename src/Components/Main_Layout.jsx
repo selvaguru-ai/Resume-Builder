@@ -6,10 +6,7 @@ import Preview_Screen from "./Preview_Screen";
 const Main_Layout = () => {
   const { formData } = useContext(ResumeContext);
   return (
-    <div
-      className="container-fluid py-4"
-      style={{ backgroundColor: "#f8f9fa" }}
-    >
+    <div className="container-fluid py-4">
       <div className="container">
         <div className="row mb-4">
           <div className="col-12 text-center">
