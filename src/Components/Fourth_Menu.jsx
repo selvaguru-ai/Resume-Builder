@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { ResumeContext } from "../scripts/ResumeContext";
 
-const Fourth_Menu = ({ educationDetailsList, setEducationDetailsList }) => {
+const Fourth_Menu = () => {
+  const { educationDetailsList, setEducationDetailsList } =
+    useContext(ResumeContext);
   const [educationDetails, setEducationDetails] = useState({});
   const [editingIndex, setEditingIndex] = useState(null);
 

@@ -16,10 +16,18 @@ export const ResumeProvider = ({ children }) => {
   });
 
   const [experiences, setExperiences] = useState([]);
+  const [educationDetailsList, setEducationDetailsList] = useState([]);
 
   return (
     <ResumeContext.Provider
-      value={{ formData, setformData, experiences, setExperiences }}
+      value={{
+        formData,
+        setformData,
+        experiences,
+        setExperiences,
+        educationDetailsList,
+        setEducationDetailsList,
+      }}
     >
       {children}
     </ResumeContext.Provider>

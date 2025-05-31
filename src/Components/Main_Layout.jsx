@@ -6,30 +6,51 @@ import Preview_Screen from "./Preview_Screen";
 const Main_Layout = () => {
   const { formData } = useContext(ResumeContext);
   return (
-    <div className="container">
-      <div className="row">
-        <p>Heading</p>
-      </div>
-      <div className="d-flex align-items-start">
-        <div className="bg-dark text-white p-3 me-3" style={{ width: "40%" }}>
-          <Menu />
+    <div
+      className="container-fluid py-4"
+      style={{ backgroundColor: "#f8f9fa" }}
+    >
+      <div className="container">
+        <div className="row mb-4">
+          <div className="col-12 text-center">
+            <h1 className="display-4 fw-bold text-primary">Resume Builder</h1>
+            <p className="lead text-muted">
+              Create a professional resume in minutes
+            </p>
+            <hr className="my-4" />
+          </div>
         </div>
-        {/* Arrow Button */}
-        <div className="d-flex flex-column justify-content-center align-items-center mt-5">
-          <button
-            className="beating-arrow"
-            onClick={() => {
-              // Call a function here to collect and log the form data
-              console.log("Full Name: ", formData.introduction.fullName);
-              console.log("Profile Summary: ", formData.profileSummary);
-              // You can also lift state up from Menu if needed
-            }}
-          >
-            ➡
-          </button>
+
+        <div className="row">
+          <div className="col-md-6">
+            <div className="card shadow-sm border-0 mb-4">
+              <div className="card-header bg-primary text-white">
+                <h4 className="mb-0">Resume Details</h4>
+              </div>
+              <div className="card-body bg-white">
+                <Menu />
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-6">
+            <div className="card shadow-sm border-0">
+              <div className="card-header bg-primary text-white">
+                <h4 className="mb-0">Resume Preview</h4>
+              </div>
+              <div className="card-body bg-white">
+                <Preview_Screen />
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="bg-dark text-white p-3 ms-3" style={{ width: "60%" }}>
-          <Preview_Screen />
+
+        <div className="row mt-4">
+          <div className="col-12 text-center">
+            <button className="btn btn-success btn-lg px-5">
+              <i className="bi bi-download me-2"></i> Download Resume
+            </button>
+          </div>
         </div>
       </div>
     </div>

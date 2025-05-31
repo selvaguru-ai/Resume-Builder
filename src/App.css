@@ -13,22 +13,43 @@
   color: #000 !important;
 }
 
-.lightbulb-icon:hover {
-  text-shadow: 0 0 5px #f1c40f, 0 0 10px #f1c40f, 0 0 20px #f1c40f,
-    0 0 30px #f1c40f, 0 0 40px #f39c12, 0 0 50px #f39c12;
+/* Enhanced lightbulb icon */
+.lightbulb-icon {
+  color: #f39c12;
+  transition: all 0.3s ease;
 }
 
+.lightbulb-icon:hover {
+  text-shadow:
+    0 0 5px #f1c40f,
+    0 0 10px #f1c40f,
+    0 0 20px #f1c40f,
+    0 0 30px #f1c40f,
+    0 0 40px #f39c12,
+    0 0 50px #f39c12;
+  transform: scale(1.2);
+}
+
+/* Enhanced beating arrow */
 .beating-arrow {
-  font-size: 3rem;
-  color: white;
+  font-size: 2.5rem;
+  color: #0d6efd;
   background: none;
-  border: none;
+  border: 2px solid #0d6efd;
   cursor: pointer;
-  transition: transform 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .beating-arrow:hover {
   animation: beatArrow 0.6s infinite;
+  background-color: #0d6efd;
+  color: white;
 }
 
 @keyframes beatArrow {
@@ -39,4 +60,78 @@
   50% {
     transform: scale(1.2);
   }
+}
+
+/* Resume builder custom styles */
+body {
+  background-color: #f8f9fa;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card {
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  border-bottom: none;
+  padding: 15px 20px;
+}
+
+.form-control,
+.form-select {
+  border-radius: 8px;
+  padding: 10px 15px;
+  border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.btn {
+  border-radius: 8px;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+  transform: translateY(-2px);
+}
+
+/* Resume preview styling */
+#resume-preview {
+  background-color: white !important;
+  border: 1px solid #dee2e6 !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  min-height: 500px;
+}
+
+/* Badge styling for skills and experiences */
+.badge {
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
 }
