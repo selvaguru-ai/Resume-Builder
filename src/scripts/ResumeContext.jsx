@@ -1,11 +1,19 @@
-import React, { Children, createContext, useContext, useState } from "react";
+import React, { createContext, useState, useMemo } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 //Create a context
-export const ResumeContext = createContext();
+const ResumeContext = createContext(null);
+
+// Initialize Supabase client outside component to prevent multiple instances
+const getSupabaseClient = () => {
+  return createClient(
+    import.meta.env.VITE_SUPABASE_URL || "",
+    import.meta.env.VITE_SUPABASE_ANON_KEY || "",
+  );
+};
 
 //Create a provider
-export const ResumeProvider = ({ children }) => {
+const ResumeProvider = ({ children }) => {
   const [formData, setformData] = useState({
     introduction: {
       fullName: "",
@@ -19,11 +27,8 @@ export const ResumeProvider = ({ children }) => {
   const [experiences, setExperiences] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Initialize Supabase client
-  const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL || "",
-    import.meta.env.VITE_SUPABASE_ANON_KEY || "",
-  );
+  // Memoize Supabase client to prevent re-creation on every render
+  const supabase = useMemo(() => getSupabaseClient(), []);
 
   // Generate profile summary using AI via Supabase Edge Function
   const generateProfileSummary = async () => {
@@ -43,7 +48,7 @@ export const ResumeProvider = ({ children }) => {
       const existingSummary = formData.profileSummary;
 
       const { data, error } = await supabase.functions.invoke(
-        "generate-profile-summary",
+        "supabase-functions-generate-profile-summary",
         {
           body: {
             fullName: fullName || "Professional",
@@ -91,7 +96,7 @@ export const ResumeProvider = ({ children }) => {
     setIsGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke(
-        "generate-project-description",
+        "supabase-functions-generate-project-description",
         {
           body: {
             jobTitle: jobTitle || "Professional",
@@ -136,3 +141,7 @@ export const ResumeProvider = ({ children }) => {
     </ResumeContext.Provider>
   );
 };
+
+ResumeProvider.displayName = "ResumeProvider";
+
+export { ResumeContext, ResumeProvider };
