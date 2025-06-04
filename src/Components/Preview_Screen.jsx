@@ -6,6 +6,7 @@ import First_Menu_Preview from "./First_Menu_Preview";
 import Second_Menu_Preview from "./Second_Menu_Preview";
 import Third_Menu_Preview from "./Third_Menu_Preview";
 import Fourth_Menu_Preview from "./Fourth_Menu_Preview";
+import Fifth_Menu_Preview from "./Fifth_Menu_Preview";
 
 const Preview_Screen = () => {
   const { formData, experiences, educationDetailsList } =
@@ -201,6 +202,9 @@ const Preview_Screen = () => {
           <Fourth_Menu_Preview
             educationDetailsList={educationDetailsList || []}
           />
+        </div>
+        <div className="resume-section">
+          <Fifth_Menu_Preview />
         </div>
       </div>
     </div>

@@ -9,7 +9,7 @@ const Main_Layout = () => {
     <div className="min-vh-100" style={{ backgroundColor: "#f8f9fa" }}>
       {/* Header Section */}
       <header
-        className="text-dark py-5 shadow-sm"
+        className="text-dark py-3 shadow-sm"
         style={{
           backgroundColor: "#f8f9fa",
         }}
@@ -18,20 +18,20 @@ const Main_Layout = () => {
           <div className="row">
             <div className="col-12">
               <h1
-                className="display-4 fw-bold mb-0 text-center"
+                className="h3 fw-bold mb-0 text-center"
                 style={{ color: "#2c3e50", letterSpacing: "-0.5px" }}
               >
                 <i
-                  className="bi bi-file-earmark-person me-3"
+                  className="bi bi-file-earmark-person me-2"
                   style={{ color: "#3498db" }}
                 ></i>
                 Resume Builder
               </h1>
               <p
-                className="lead text-center mb-0 mt-3"
+                className="text-center mb-0 mt-2"
                 style={{
                   color: "#6c757d",
-                  fontSize: "1.1rem",
+                  fontSize: "0.95rem",
                   fontWeight: "300",
                 }}
               >

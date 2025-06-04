@@ -110,6 +110,18 @@ const Fourth_Menu = ({ educationDetailsList, setEducationDetailsList }) => {
         </div>
       </div>
       <div className="row mb-3">
+        <div className="col-6">
+          <input
+            type="text"
+            name="gpa"
+            value={educationDetails.gpa || ""}
+            onChange={handleChange}
+            className="form-control"
+            placeholder="GPA/CGPA (Optional)"
+          />
+        </div>
+      </div>
+      <div className="row mb-3">
         <div className="col-3">
           <button className="btn btn-primary form-control" onClick={addData}>
             {editingIndex !== null ? "Update" : "Add"}

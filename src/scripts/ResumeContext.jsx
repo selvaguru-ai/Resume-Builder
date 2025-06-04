@@ -26,6 +26,7 @@ const ResumeProvider = ({ children }) => {
 
   const [experiences, setExperiences] = useState([]);
   const [educationDetailsList, setEducationDetailsList] = useState([]);
+  const [skillList, setSkillList] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Memoize Supabase client to prevent re-creation on every render
@@ -135,6 +136,8 @@ const ResumeProvider = ({ children }) => {
         setExperiences,
         educationDetailsList,
         setEducationDetailsList,
+        skillList,
+        setSkillList,
         isGenerating,
         generateProfileSummary,
         generateProjectDescription,

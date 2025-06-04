@@ -167,3 +167,44 @@ h6 {
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
+
+/* Skills Preview Styling */
+.skills-container {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.skills-column {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+@media print {
+  .skills-container {
+    display: flex !important;
+    gap: 20px !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .skills-column {
+    flex: 1 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .skills-column ul {
+    margin: 0 !important;
+    padding: 0 !important;
+    padding-left: 15px !important;
+    list-style-type: disc !important;
+  }
+
+  .skills-column li {
+    font-size: 11px !important;
+    margin-bottom: 2px !important;
+    color: #212529 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
