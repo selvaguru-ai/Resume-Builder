@@ -39,7 +39,7 @@ const Third_Menu_Preview = () => {
                   <span style={{ fontSize: "12px" }}>{exp.toDate}</span>
                 </div>
               </div>
-              <p
+              <div
                 style={{
                   fontSize: "11px",
                   marginTop: "5px",
@@ -48,8 +48,21 @@ const Third_Menu_Preview = () => {
                   marginLeft: "0px",
                 }}
               >
-                {exp.projectDescription}
-              </p>
+                {exp.projectDescription.includes("•") ? (
+                  <ul style={{ paddingLeft: "15px", margin: "0" }}>
+                    {exp.projectDescription
+                      .split("\n")
+                      .filter((line) => line.trim())
+                      .map((point, idx) => (
+                        <li key={idx} style={{ marginBottom: "2px" }}>
+                          {point.replace(/^•\s*/, "").trim()}
+                        </li>
+                      ))}
+                  </ul>
+                ) : (
+                  <p style={{ margin: "0" }}>{exp.projectDescription}</p>
+                )}
+              </div>
             </div>
           </div>
         ))}

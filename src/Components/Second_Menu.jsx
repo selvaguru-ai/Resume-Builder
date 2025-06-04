@@ -3,9 +3,10 @@ import "../App.css";
 import { ResumeContext } from "../scripts/ResumeContext";
 
 const Second_Menu = () => {
-  const { formData, setformData } = useContext(ResumeContext);
-  const callAI = () => {
-    alert(JSON.stringify(formData));
+  const { formData, setformData, isGenerating, generateProfileSummary } =
+    useContext(ResumeContext);
+  const callAI = async () => {
+    await generateProfileSummary();
   };
   const handleProfileChange = (e) => {
     setformData((prev) => ({
@@ -35,12 +36,13 @@ const Second_Menu = () => {
             bottom: "10px",
             right: "10px", // use right instead of fixed left
             pointerEvents: "auto",
-            cursor: "pointer",
+            cursor: isGenerating ? "not-allowed" : "pointer",
             fontSize: "30px",
+            opacity: isGenerating ? 0.5 : 1,
           }}
-          onClick={callAI}
+          onClick={!isGenerating ? callAI : undefined}
         >
-          💡
+          {isGenerating ? "⏳" : "💡"}
         </span>
       </div>
     </div>

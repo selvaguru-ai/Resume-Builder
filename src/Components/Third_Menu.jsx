@@ -3,7 +3,12 @@ import "../App.css";
 import { ResumeContext } from "../scripts/ResumeContext";
 
 const Third_Menu = () => {
-  const { experiences, setExperiences } = useContext(ResumeContext);
+  const {
+    experiences,
+    setExperiences,
+    isGenerating,
+    generateProjectDescription,
+  } = useContext(ResumeContext);
   const [currentExperience, setCurrentExperience] = useState({
     jobTitle: "",
     companyName: "",
@@ -64,8 +69,19 @@ const Third_Menu = () => {
     setEditingIndex(index);
   };
 
-  const callAI = () => {
-    alert(JSON.stringify(currentExperience));
+  const callAI = async () => {
+    const generatedDescription = await generateProjectDescription(
+      currentExperience.jobTitle,
+      currentExperience.companyName,
+      currentExperience.projectDescription,
+    );
+
+    if (generatedDescription) {
+      setCurrentExperience((prev) => ({
+        ...prev,
+        projectDescription: generatedDescription,
+      }));
+    }
   };
 
   return (
@@ -142,12 +158,13 @@ const Third_Menu = () => {
               bottom: "10px",
               right: "10px", // responsive placement
               pointerEvents: "auto",
-              cursor: "pointer",
+              cursor: isGenerating ? "not-allowed" : "pointer",
               fontSize: "30px",
+              opacity: isGenerating ? 0.5 : 1,
             }}
-            onClick={callAI}
+            onClick={!isGenerating ? callAI : undefined}
           >
-            💡
+            {isGenerating ? "⏳" : "💡"}
           </span>
         </div>
       </div>
