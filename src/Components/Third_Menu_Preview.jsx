@@ -5,39 +5,52 @@ const Third_Menu_Preview = () => {
   const { formData, experiences } = useContext(ResumeContext);
   return (
     <div>
-      <h4
-        style={{
-          fontSize: "12px",
-          fontWeight: "bold",
-          marginBottom: "5px",
-          textAlign: "left",
-          marginTop: "5px",
-        }}
-      >
-        Experience
-      </h4>
       {experiences.length !== 0 &&
         experiences.map((exp, index) => (
-          <div key={index} className="row mb-3 p-3">
-            <div className="col-3">
-              <h4
+          <div key={index}>
+            <h4
+              style={{
+                fontSize: "12px",
+                fontWeight: "bold",
+                marginBottom: "2px",
+                textAlign: "left",
+                marginTop: "7px",
+              }}
+            >
+              Experience
+            </h4>
+            <div
+              className="mb-2"
+              style={{ paddingLeft: "0px", paddingRight: "0px" }}
+            >
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                  <strong style={{ fontSize: "12px" }}>Company: </strong>
+                  <span style={{ fontSize: "12px" }}>{exp.companyName}</span>
+                  &nbsp;
+                  <strong style={{ fontSize: "12px" }}>Designation: </strong>
+                  <span style={{ fontSize: "12px" }}>{exp.jobTitle}</span>
+                </div>
+                <div>
+                  <strong style={{ fontSize: "12px" }}>From: </strong>
+                  <span style={{ fontSize: "12px" }}>{exp.fromDate}</span>
+                  &nbsp;
+                  <strong style={{ fontSize: "12px" }}>To: </strong>
+                  <span style={{ fontSize: "12px" }}>{exp.toDate}</span>
+                </div>
+              </div>
+              <p
                 style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  marginBottom: "5px",
+                  fontSize: "11px",
+                  marginTop: "5px",
                   textAlign: "left",
+                  paddingLeft: "0px",
+                  marginLeft: "0px",
                 }}
               >
-                <strong style={{ textAlign: "left" }}>Company: </strong>{" "}
-                {exp.companyName} &nbsp;
-                <strong>Designation: </strong> {exp.jobTitle}{" "}
-              </h4>
+                {exp.projectDescription}
+              </p>
             </div>
-            <p>
-              <strong>From:</strong> {exp.fromDate} &nbsp;
-              <strong>To:</strong> {exp.toDate}
-            </p>
-            <p>{exp.projectDescription}</p>
           </div>
         ))}
     </div>
