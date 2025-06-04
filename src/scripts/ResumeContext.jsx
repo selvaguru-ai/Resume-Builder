@@ -1,5 +1,5 @@
 import React, { Children, createContext, useContext, useState } from "react";
-import OpenAI from "openai";
+import { createClient } from "@supabase/supabase-js";
 
 //Create a context
 export const ResumeContext = createContext();
@@ -19,19 +19,20 @@ export const ResumeProvider = ({ children }) => {
   const [experiences, setExperiences] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Initialize OpenAI client
-  const openai = import.meta.env.VITE_OPENAI_API_KEY
-    ? new OpenAI({
-        apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-        dangerouslyAllowBrowser: true,
-      })
-    : null;
+  // Initialize Supabase client
+  const supabase = createClient(
+    import.meta.env.VITE_SUPABASE_URL || "",
+    import.meta.env.VITE_SUPABASE_ANON_KEY || "",
+  );
 
-  // Generate profile summary using AI
+  // Generate profile summary using AI via Supabase Edge Function
   const generateProfileSummary = async () => {
-    if (!import.meta.env.VITE_OPENAI_API_KEY || !openai) {
+    if (
+      !import.meta.env.VITE_SUPABASE_URL ||
+      !import.meta.env.VITE_SUPABASE_ANON_KEY
+    ) {
       alert(
-        "Please set your VITE_OPENAI_API_KEY in the project environment variables. Go to project settings to add it.",
+        "Please set your VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in the project environment variables. Go to project settings to add them.",
       );
       return;
     }
@@ -41,69 +42,77 @@ export const ResumeProvider = ({ children }) => {
       const { fullName } = formData.introduction;
       const existingSummary = formData.profileSummary;
 
-      const prompt = `Generate a professional 6-line profile summary for a resume. 
-      Name: ${fullName || "Professional"}
-      ${existingSummary ? `Current summary: ${existingSummary}` : ""}
-      
-      Create a compelling professional summary that highlights key skills, experience, and career objectives. Make it exactly 6 lines, each line should be a complete sentence. Focus on professional strengths and career goals.`;
+      const { data, error } = await supabase.functions.invoke(
+        "generate-profile-summary",
+        {
+          body: {
+            fullName: fullName || "Professional",
+            existingSummary: existingSummary || "",
+          },
+        },
+      );
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: prompt }],
-        max_tokens: 200,
-        temperature: 0.7,
-      });
+      if (error) {
+        throw error;
+      }
 
-      const generatedSummary = response.choices[0].message.content.trim();
-      setformData((prev) => ({
-        ...prev,
-        profileSummary: generatedSummary,
-      }));
+      if (data && data.summary) {
+        setformData((prev) => ({
+          ...prev,
+          profileSummary: data.summary,
+        }));
+      }
     } catch (error) {
       console.error("Error generating profile summary:", error);
       alert(
-        "Error generating profile summary. Please check your API key and try again.",
+        "Error generating profile summary. Please make sure Supabase is properly configured and the Edge Function is deployed.",
       );
     } finally {
       setIsGenerating(false);
     }
   };
 
-  // Generate project description using AI
+  // Generate project description using AI via Supabase Edge Function
   const generateProjectDescription = async (
     jobTitle,
     companyName,
     existingDescription,
   ) => {
-    if (!import.meta.env.VITE_OPENAI_API_KEY || !openai) {
+    if (
+      !import.meta.env.VITE_SUPABASE_URL ||
+      !import.meta.env.VITE_SUPABASE_ANON_KEY
+    ) {
       alert(
-        "Please set your VITE_OPENAI_API_KEY in the project environment variables. Go to project settings to add it.",
+        "Please set your VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in the project environment variables. Go to project settings to add them.",
       );
       return null;
     }
 
     setIsGenerating(true);
     try {
-      const prompt = `Generate a professional project description for a resume with at least 6 bullet points.
-      Job Title: ${jobTitle || "Professional"}
-      Company: ${companyName || "Company"}
-      ${existingDescription ? `Current description: ${existingDescription}` : ""}
-      
-      Create at least 6 detailed bullet points that describe key responsibilities, achievements, and impact. Each bullet point should start with a strong action verb and quantify results where possible. Format as bullet points with • symbol.`;
+      const { data, error } = await supabase.functions.invoke(
+        "generate-project-description",
+        {
+          body: {
+            jobTitle: jobTitle || "Professional",
+            companyName: companyName || "Company",
+            existingDescription: existingDescription || "",
+          },
+        },
+      );
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: prompt }],
-        max_tokens: 300,
-        temperature: 0.7,
-      });
+      if (error) {
+        throw error;
+      }
 
-      const generatedDescription = response.choices[0].message.content.trim();
-      return generatedDescription;
+      if (data && data.description) {
+        return data.description;
+      }
+      return null;
     } catch (error) {
       console.error("Error generating project description:", error);
       alert(
-        "Error generating project description. Please check your API key and try again.",
+        "Error generating project description. Please make sure Supabase is properly configured and the Edge Function is deployed.",
       );
       return null;
     } finally {
