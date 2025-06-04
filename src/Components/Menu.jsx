@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Form from "react-bootstrap/Form";
 import "react-phone-input-2/lib/bootstrap.css";
 import PhoneInput from "react-phone-input-2";
+import { ResumeContext } from "../scripts/ResumeContext";
 import First_Menu from "./First_Menu";
 import Second_Menu from "./Second_Menu";
 import Third_Menu from "./Third_Menu";
@@ -10,11 +11,12 @@ import Sample_Menu from "./Sample_Menu";
 import Fifth_Menu from "./Fifth_Menu";
 
 const Menu = () => {
+  const { educationDetailsList, setEducationDetailsList } =
+    useContext(ResumeContext);
   const [taskList, setTaskList] = useState(() => {
     const stored = localStorage.getItem("tasks");
     return stored ? JSON.parse(stored) : [];
   });
-  const [educationDetailsList, setEducationDetailsList] = useState([]);
   const [skillList, setSkillList] = useState([]);
   //const [experiences, setExperiences] = useState([]);
   useEffect(() => {

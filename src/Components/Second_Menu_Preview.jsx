@@ -4,9 +4,9 @@ import { ResumeContext } from "../scripts/ResumeContext";
 const Second_Menu_Preview = () => {
   const { formData } = useContext(ResumeContext);
   return (
-    <div>
+    <div className="resume-section">
       {formData.profileSummary.trim() !== "" && (
-        <>
+        <div className="no-page-break">
           <h4
             style={{
               fontSize: "12px",
@@ -23,7 +23,7 @@ const Second_Menu_Preview = () => {
           >
             <span>{formData.profileSummary.replace(/"/g, "")}</span>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

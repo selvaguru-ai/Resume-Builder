@@ -4,10 +4,10 @@ import { ResumeContext } from "../scripts/ResumeContext";
 const Third_Menu_Preview = () => {
   const { formData, experiences } = useContext(ResumeContext);
   return (
-    <div>
+    <div className="resume-section">
       {experiences.length !== 0 &&
         experiences.map((exp, index) => (
-          <div key={index}>
+          <div key={index} className="experience-item no-page-break">
             <h4
               style={{
                 fontSize: "12px",
@@ -49,7 +49,10 @@ const Third_Menu_Preview = () => {
                 }}
               >
                 {exp.projectDescription.includes("•") ? (
-                  <ul style={{ paddingLeft: "15px", margin: "0" }}>
+                  <ul
+                    style={{ paddingLeft: "15px", margin: "0" }}
+                    className="no-page-break"
+                  >
                     {exp.projectDescription
                       .split("\n")
                       .filter((line) => line.trim())
@@ -60,7 +63,9 @@ const Third_Menu_Preview = () => {
                       ))}
                   </ul>
                 ) : (
-                  <p style={{ margin: "0" }}>{exp.projectDescription}</p>
+                  <p style={{ margin: "0" }} className="no-page-break">
+                    {exp.projectDescription}
+                  </p>
                 )}
               </div>
             </div>
