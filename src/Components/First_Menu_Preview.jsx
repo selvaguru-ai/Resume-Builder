@@ -5,7 +5,119 @@ import linkedinIcon from "../assets/linkedin.svg";
 import { ResumeContext } from "../scripts/ResumeContext";
 
 const First_Menu_Preview = () => {
-  const { formData } = useContext(ResumeContext);
+  const { formData, selectedLayout } = useContext(ResumeContext);
+
+  // For classic layout, render contact info directly below name
+  if (selectedLayout === "classic") {
+    return (
+      <>
+        {/* Full Name */}
+        {formData?.introduction?.fullName && (
+          <h3
+            style={{
+              fontSize: "18px",
+              fontWeight: "bold",
+              marginBottom: "8px",
+              color: "#3498db",
+              textAlign: "center",
+            }}
+          >
+            {formData.introduction.fullName}
+          </h3>
+        )}
+
+        {/* Contact Info */}
+        <div
+          className="d-flex flex-column align-items-center gap-1"
+          style={{
+            marginBottom: "12px",
+            fontSize: "14px",
+          }}
+        >
+          <div
+            className="d-flex justify-content-center align-items-center gap-4"
+            style={{ marginBottom: "5px" }}
+          >
+            {/* Email */}
+            {formData?.introduction?.email && (
+              <div className="d-flex align-items-center">
+                <img
+                  src={emailIcon}
+                  alt="Email"
+                  width="12"
+                  height="12"
+                  style={{ marginRight: "5px" }}
+                />
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    textDecoration: "none",
+                    color: "#3498db", // anchor tag needs it separately
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {formData.introduction.email}
+                </a>
+              </div>
+            )}
+
+            {/* Phone */}
+            {formData?.introduction?.phone && (
+              <div className="d-flex align-items-center">
+                <img
+                  src={phoneIcon}
+                  alt="Phone"
+                  width="12"
+                  height="12"
+                  style={{ marginRight: "5px" }}
+                />
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    textDecoration: "none",
+                    color: "#3498db", // anchor tag needs it separately
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {formData.introduction.phone}
+                </a>
+              </div>
+            )}
+          </div>
+
+          {/* LinkedIn */}
+          {formData?.introduction?.linkedin && (
+            <div className="d-flex align-items-center">
+              <img
+                src={linkedinIcon}
+                alt="LinkedIn"
+                width="12"
+                height="12"
+                style={{ marginRight: "5px" }}
+              />
+              <a
+                href={formData.introduction.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  textDecoration: "none",
+                  color: "#3498db", // anchor tag needs it separately
+                  wordBreak: "break-word",
+                }}
+              >
+                {formData.introduction.linkedin}
+              </a>
+            </div>
+          )}
+        </div>
+        <div className="blue-separator"></div>
+      </>
+    );
+  }
+
+  // For other layouts, use the original responsive layout
   return (
     <>
       {/* Full Name Centered */}

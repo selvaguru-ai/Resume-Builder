@@ -149,6 +149,152 @@ h6 {
   color: #2c3e50;
 }
 
+/* Resume Layout Styles */
+.layout-classic {
+  text-align: center;
+}
+
+.layout-classic h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.layout-classic h3 {
+  color: #3498db;
+  //border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.blue-separator {
+  border-bottom: 2px solid #3498db;
+  width: 100%;
+  margin: 8px 0 12px 0;
+}
+
+.layout-modern {
+  text-align: left;
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 15px;
+}
+
+.layout-modern h1 {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.layout-modern h3 {
+  color: #007bff;
+  border-left: 4px solid #007bff;
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  text-transform: none;
+}
+
+.layout-modern .contact-info {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #ddd;
+}
+
+.layout-minimal {
+  text-align: left;
+  font-family: "Georgia", serif;
+  color: #333;
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+}
+
+.layout-minimal h1 {
+  font-size: 2rem;
+  font-weight: 400;
+  color: #333;
+  margin-bottom: 0.3rem;
+  letter-spacing: 1px;
+}
+
+.layout-minimal h3 {
+  color: #666;
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+  text-transform: none;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.3rem;
+}
+
+.layout-minimal .contact-info {
+  border-bottom: 2px solid #333;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+
+.layout-professional {
+  text-align: left;
+  background: #f8f9fa;
+  border-left: 5px solid #007bff;
+}
+
+.layout-professional h1 {
+  font-size: 2.3rem;
+  font-weight: 600;
+  color: #007bff;
+  margin-bottom: 0.5rem;
+}
+
+.layout-professional h3 {
+  color: #007bff;
+  background: #e3f2fd;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  text-transform: none;
+}
+
+.layout-professional .contact-info {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Layout-specific text colors */
+.layout-modern p,
+.layout-modern li,
+.layout-modern span {
+  color: #333 !important;
+}
+
+.layout-minimal p,
+.layout-minimal li,
+.layout-minimal span {
+  color: #333 !important;
+}
+
+.layout-professional p,
+.layout-professional li,
+.layout-professional span {
+  color: #495057 !important;
+}
+
+.layout-classic p,
+.layout-classic li,
+.layout-classic span {
+  color: #2c3e50 !important;
+}
+
 /* Smooth Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

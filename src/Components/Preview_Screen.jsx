@@ -9,7 +9,7 @@ import Fourth_Menu_Preview from "./Fourth_Menu_Preview";
 import Fifth_Menu_Preview from "./Fifth_Menu_Preview";
 
 const Preview_Screen = () => {
-  const { formData, experiences, educationDetailsList } =
+  const { formData, experiences, educationDetailsList, selectedLayout } =
     useContext(ResumeContext) || {};
   const downloadPDF = () => {
     const element = document.getElementById("resume-preview");
@@ -179,7 +179,7 @@ const Preview_Screen = () => {
       {/* Resume Preview */}
       <div
         id="resume-preview"
-        className="resume-preview p-4 text-dark text-center no-page-break"
+        className={`resume-preview p-4 text-dark no-page-break layout-${selectedLayout || "classic"}`}
         style={{
           backgroundColor: "#ffffff",
           borderRadius: "8px",

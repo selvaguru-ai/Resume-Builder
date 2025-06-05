@@ -3,6 +3,41 @@ import { ResumeContext } from "../scripts/ResumeContext";
 import Menu from "./Menu";
 import Preview_Screen from "./Preview_Screen";
 
+const LayoutSelector = () => {
+  const { selectedLayout, setSelectedLayout } = useContext(ResumeContext);
+
+  const layouts = [
+    { id: "classic", name: "Classic", icon: "📄" },
+    { id: "modern", name: "Modern", icon: "🎨" },
+    { id: "minimal", name: "Minimal", icon: "✨" },
+    { id: "professional", name: "Professional", icon: "💼" },
+  ];
+
+  return (
+    <div className="d-flex align-items-center">
+      <select
+        className="form-select form-select-sm"
+        value={selectedLayout}
+        onChange={(e) => setSelectedLayout(e.target.value)}
+        style={{
+          backgroundColor: "#ffffff",
+          color: "#2c3e50",
+          border: "1px solid #dee2e6",
+          borderRadius: "6px",
+          fontSize: "0.85rem",
+          minWidth: "140px",
+        }}
+      >
+        {layouts.map((layout) => (
+          <option key={layout.id} value={layout.id}>
+            {layout.icon} {layout.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
 const Main_Layout = () => {
   const { formData } = useContext(ResumeContext);
   return (
@@ -91,13 +126,16 @@ const Main_Layout = () => {
                   borderRadius: "12px 12px 0 0",
                 }}
               >
-                <h5
-                  className="card-title mb-0 fw-semibold"
-                  style={{ fontSize: "1.1rem" }}
-                >
-                  <i className="bi bi-eye me-2"></i>
-                  Resume Preview
-                </h5>
+                <div className="d-flex justify-content-between align-items-center">
+                  <h5
+                    className="card-title mb-0 fw-semibold"
+                    style={{ fontSize: "1.1rem" }}
+                  >
+                    <i className="bi bi-eye me-2"></i>
+                    Resume Preview
+                  </h5>
+                  <LayoutSelector />
+                </div>
               </div>
               <div
                 className="card-body p-4 overflow-auto"
@@ -126,7 +164,7 @@ const Main_Layout = () => {
                   fontWeight: "300",
                 }}
               >
-                &copy; 2024 Resume Builder. Built with React & Bootstrap
+                &copy; 2024 Resume Builder. Developed by Selvaguru
               </p>
             </div>
           </div>
