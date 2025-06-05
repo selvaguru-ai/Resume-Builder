@@ -21,6 +21,7 @@ const Fifth_Menu_Preview = () => {
         style={{
           fontSize: "12px",
           fontWeight: "bold",
+          marginTop: "15px",
           marginBottom: "5px",
           textAlign: "left",
         }}
