@@ -68,6 +68,12 @@ const Preview_Screen = () => {
     `;
     document.head.appendChild(style);
 
+    // Add empty line before footer to prevent text breaking
+    const emptyLine = document.createElement("div");
+    emptyLine.style.height = "20px";
+    emptyLine.innerHTML = "&nbsp;";
+    element.appendChild(emptyLine);
+
     // Add footer element for page numbers
     const footer = document.createElement("div");
     footer.className = "pdf-footer";
@@ -129,11 +135,16 @@ const Preview_Screen = () => {
       })
       .save()
       .then(() => {
-        // Remove the temporary style and footer after PDF generation
+        // Remove the temporary style, empty line, and footer after PDF generation
         document.head.removeChild(style);
         const footerElement = element.querySelector(".pdf-footer");
         if (footerElement) {
           element.removeChild(footerElement);
+        }
+        // Remove the empty line element
+        const emptyLineElement = element.children[element.children.length - 2];
+        if (emptyLineElement && emptyLineElement.innerHTML === "&nbsp;") {
+          element.removeChild(emptyLineElement);
         }
       })
       .catch((error) => {
@@ -142,6 +153,11 @@ const Preview_Screen = () => {
         const footerElement = element.querySelector(".pdf-footer");
         if (footerElement) {
           element.removeChild(footerElement);
+        }
+        // Remove the empty line element on error
+        const emptyLineElement = element.children[element.children.length - 2];
+        if (emptyLineElement && emptyLineElement.innerHTML === "&nbsp;") {
+          element.removeChild(emptyLineElement);
         }
       });
   };
