@@ -1,6 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import html2pdf from "html2pdf.js";
 import { ResumeContext } from "../scripts/ResumeContext";
+import { createClient } from "@supabase/supabase-js";
 
 import First_Menu_Preview from "./First_Menu_Preview";
 import Second_Menu_Preview from "./Second_Menu_Preview";
@@ -11,6 +12,109 @@ import Fifth_Menu_Preview from "./Fifth_Menu_Preview";
 const Preview_Screen = () => {
   const { formData, experiences, educationDetailsList, selectedLayout } =
     useContext(ResumeContext) || {};
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [user, setUser] = useState(null);
+
+  // Initialize Supabase client
+  const supabase = createClient(
+    import.meta.env.VITE_SUPABASE_URL || "",
+    import.meta.env.VITE_SUPABASE_ANON_KEY || "",
+  );
+
+  // Listen for auth state changes
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state changed:", event, session?.user?.email);
+      if (event === "SIGNED_IN" && session?.user) {
+        setUser(session.user);
+        setIsAuthenticating(false);
+        // Auto-download PDF after successful sign-in
+        setTimeout(() => {
+          downloadPDF();
+        }, 1000);
+      } else if (event === "SIGNED_OUT") {
+        setUser(null);
+      }
+    });
+
+    // Check initial auth state
+    const checkInitialAuth = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
+      }
+    };
+
+    checkInitialAuth();
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Handle Google Sign-In
+  const handleGoogleSignIn = async () => {
+    setIsAuthenticating(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}${window.location.pathname}`,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
+
+      if (error) {
+        console.error("OAuth error:", error);
+        throw error;
+      }
+
+      // The user will be redirected to Google, so we don't need to check auth here
+      // The auth state will be handled when they return
+      return true;
+    } catch (error) {
+      console.error("Google Sign-In error:", error);
+      alert(
+        `Failed to sign in with Google: ${error.message}. Please try again.`,
+      );
+      return false;
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
+
+  // Check current authentication status
+  const checkAuthStatus = async () => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      return user;
+    } catch (error) {
+      console.error("Auth check error:", error);
+      return null;
+    }
+  };
+
+  // Handle download with authentication
+  const handleDownloadClick = async () => {
+    // Check if user is already authenticated
+    const currentUser = await checkAuthStatus();
+
+    if (currentUser) {
+      // User is authenticated, proceed with download
+      downloadPDF();
+    } else {
+      // User is not authenticated, trigger Google Sign-In
+      // The download will happen automatically after successful sign-in via the auth state listener
+      await handleGoogleSignIn();
+    }
+  };
   const downloadPDF = () => {
     const element = document.getElementById("resume-preview");
 
@@ -168,27 +272,46 @@ const Preview_Screen = () => {
       <div className="d-flex justify-content-end mb-3">
         <button
           className="btn btn-success btn-sm shadow-sm"
-          onClick={downloadPDF}
+          onClick={handleDownloadClick}
+          disabled={isAuthenticating}
           style={{
             borderRadius: "8px",
             fontWeight: "500",
             padding: "8px 16px",
             fontSize: "0.9rem",
-            backgroundColor: "#28a745",
+            backgroundColor: isAuthenticating ? "#6c757d" : "#28a745",
             border: "none",
             transition: "all 0.2s ease",
+            cursor: isAuthenticating ? "not-allowed" : "pointer",
           }}
           onMouseOver={(e) => {
-            e.target.style.backgroundColor = "#218838";
-            e.target.style.transform = "translateY(-1px)";
+            if (!isAuthenticating) {
+              e.target.style.backgroundColor = "#218838";
+              e.target.style.transform = "translateY(-1px)";
+            }
           }}
           onMouseOut={(e) => {
-            e.target.style.backgroundColor = "#28a745";
-            e.target.style.transform = "translateY(0)";
+            if (!isAuthenticating) {
+              e.target.style.backgroundColor = "#28a745";
+              e.target.style.transform = "translateY(0)";
+            }
           }}
         >
-          <i className="bi bi-download me-2"></i>
-          Download PDF
+          {isAuthenticating ? (
+            <>
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Signing in...
+            </>
+          ) : (
+            <>
+              <i className="bi bi-download me-2"></i>
+              Download PDF
+            </>
+          )}
         </button>
       </div>
 
