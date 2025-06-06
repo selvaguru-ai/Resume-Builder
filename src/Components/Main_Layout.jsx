@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { ResumeContext } from "../scripts/ResumeContext";
 import Menu from "./Menu";
 import Preview_Screen from "./Preview_Screen";
@@ -38,8 +38,112 @@ const LayoutSelector = () => {
   );
 };
 
+const ProfileSection = () => {
+  const { user, setUser, supabase } = useContext(ResumeContext);
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Logout error:", error);
+        alert("Failed to logout. Please try again.");
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Failed to logout. Please try again.");
+    }
+  };
+
+  const displayName = user?.user_metadata?.full_name || user?.email || "Guest";
+
+  return (
+    <div className="d-flex align-items-center">
+      <div className="dropdown">
+        <button
+          className="btn btn-outline-primary btn-sm dropdown-toggle d-flex align-items-center"
+          type="button"
+          id="profileDropdown"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          style={{
+            borderColor: "#3498db",
+            color: "#3498db",
+            borderRadius: "20px",
+            padding: "6px 12px",
+            fontSize: "1.0rem",
+            fontWeight: "500",
+          }}
+        >
+          <i className="bi bi-person-circle me-2"></i>
+          {displayName}
+        </button>
+        <ul
+          className="dropdown-menu dropdown-menu-end"
+          aria-labelledby="profileDropdown"
+        >
+          <li>
+            <span className="dropdown-item-text text-muted small">
+              {user ? "Signed in as:" : "Not signed in"}
+            </span>
+          </li>
+          <li>
+            <span className="dropdown-item-text fw-semibold">
+              {displayName}
+            </span>
+          </li>
+          {user && (
+            <>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
+              <li>
+                <button
+                  className="dropdown-item text-danger"
+                  onClick={handleLogout}
+                >
+                  <i className="bi bi-box-arrow-right me-2"></i>
+                  Logout
+                </button>
+              </li>
+            </>
+          )}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
 const Main_Layout = () => {
-  const { formData } = useContext(ResumeContext);
+  const { formData, user, setUser, supabase } = useContext(ResumeContext);
+
+  // Listen for auth state changes
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_IN" && session?.user) {
+        setUser(session.user);
+      } else if (event === "SIGNED_OUT") {
+        setUser(null);
+      }
+    });
+
+    // Check initial auth state
+    const checkInitialAuth = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
+      }
+    };
+
+    checkInitialAuth();
+
+    return () => subscription.unsubscribe();
+  }, [supabase, setUser]);
   return (
     <div className="min-vh-100" style={{ backgroundColor: "#f8f9fa" }}>
       {/* Header Section */}
@@ -52,26 +156,33 @@ const Main_Layout = () => {
         <div className="container">
           <div className="row">
             <div className="col-12">
-              <h1
-                className="h3 fw-bold mb-0 text-center"
-                style={{ color: "#2c3e50", letterSpacing: "-0.5px" }}
-              >
-                <i
-                  className="bi bi-file-earmark-person me-2"
-                  style={{ color: "#3498db" }}
-                ></i>
-                Resume Builder
-              </h1>
-              <p
-                className="text-center mb-0 mt-2"
-                style={{
-                  color: "#6c757d",
-                  fontSize: "0.95rem",
-                  fontWeight: "300",
-                }}
-              >
-                Create your professional resume in minutes
-              </p>
+              <div className="d-flex justify-content-between align-items-center">
+                <div className="text-center flex-grow-1">
+                  <h1
+                    className="h3 fw-bold mb-0"
+                    style={{ color: "#2c3e50", letterSpacing: "-0.5px" }}
+                  >
+                    <i
+                      className="bi bi-file-earmark-person me-2"
+                      style={{ color: "#3498db" }}
+                    ></i>
+                    Resume Builder
+                  </h1>
+                  <p
+                    className="mb-0 mt-2"
+                    style={{
+                      color: "#6c757d",
+                      fontSize: "0.95rem",
+                      fontWeight: "300",
+                    }}
+                  >
+                    Create your professional resume in minutes
+                  </p>
+                </div>
+                <div className="ms-3">
+                  <ProfileSection />
+                </div>
+              </div>
             </div>
           </div>
         </div>

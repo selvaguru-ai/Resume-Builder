@@ -10,46 +10,32 @@ import Fourth_Menu_Preview from "./Fourth_Menu_Preview";
 import Fifth_Menu_Preview from "./Fifth_Menu_Preview";
 
 const Preview_Screen = () => {
-  const { formData, experiences, educationDetailsList, selectedLayout } =
-    useContext(ResumeContext) || {};
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
-  const [user, setUser] = useState(null);
+  const {
+    formData,
+    experiences,
+    educationDetailsList,
+    selectedLayout,
+    user,
+    setUser,
+    isAuthenticating,
+    setIsAuthenticating,
+    supabase,
+  } = useContext(ResumeContext) || {};
 
-  // Initialize Supabase client
-  const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL || "",
-    import.meta.env.VITE_SUPABASE_ANON_KEY || "",
-  );
-
-  // Listen for auth state changes
+  // Listen for auth state changes for PDF download
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
       if (event === "SIGNED_IN" && session?.user) {
-        setUser(session.user);
         setIsAuthenticating(false);
         // Auto-download PDF after successful sign-in
         setTimeout(() => {
           downloadPDF();
         }, 1000);
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
       }
     });
-
-    // Check initial auth state
-    const checkInitialAuth = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        setUser(user);
-      }
-    };
-
-    checkInitialAuth();
 
     return () => subscription.unsubscribe();
   }, []);

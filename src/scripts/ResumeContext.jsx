@@ -29,6 +29,8 @@ const ResumeProvider = ({ children }) => {
   const [skillList, setSkillList] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedLayout, setSelectedLayout] = useState("classic");
+  const [user, setUser] = useState(null);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   // Memoize Supabase client to prevent re-creation on every render
   const supabase = useMemo(() => getSupabaseClient(), []);
@@ -144,6 +146,11 @@ const ResumeProvider = ({ children }) => {
         generateProjectDescription,
         selectedLayout,
         setSelectedLayout,
+        user,
+        setUser,
+        isAuthenticating,
+        setIsAuthenticating,
+        supabase,
       }}
     >
       {children}
