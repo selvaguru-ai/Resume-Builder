@@ -14,26 +14,142 @@ const getSupabaseClient = () => {
 
 //Create a provider
 const ResumeProvider = ({ children }) => {
-  const [formData, setformData] = useState({
-    introduction: {
-      fullName: "",
-      linkedin: "",
-      email: "",
-      phone: "",
-    },
-    profileSummary: "",
-  });
+  // Load initial data from localStorage
+  const loadFromStorage = (key, defaultValue) => {
+    try {
+      const stored = localStorage.getItem(key);
+      return stored ? JSON.parse(stored) : defaultValue;
+    } catch (error) {
+      console.error(`Error loading ${key} from localStorage:`, error);
+      return defaultValue;
+    }
+  };
 
-  const [experiences, setExperiences] = useState([]);
-  const [educationDetailsList, setEducationDetailsList] = useState([]);
-  const [skillList, setSkillList] = useState([]);
+  const [formData, setformData] = useState(() =>
+    loadFromStorage("resumeFormData", {
+      introduction: {
+        fullName: "",
+        linkedin: "",
+        email: "",
+        phone: "",
+      },
+      profileSummary: "",
+    }),
+  );
+
+  const [experiences, setExperiences] = useState(() =>
+    loadFromStorage("resumeExperiences", []),
+  );
+  const [educationDetailsList, setEducationDetailsList] = useState(() =>
+    loadFromStorage("resumeEducationDetails", []),
+  );
+  const [skillList, setSkillList] = useState(() =>
+    loadFromStorage("resumeSkillList", []),
+  );
   const [isGenerating, setIsGenerating] = useState(false);
-  const [selectedLayout, setSelectedLayout] = useState("classic");
+  const [selectedLayout, setSelectedLayout] = useState(() =>
+    loadFromStorage("resumeSelectedLayout", "classic"),
+  );
   const [user, setUser] = useState(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   // Memoize Supabase client to prevent re-creation on every render
   const supabase = useMemo(() => getSupabaseClient(), []);
+
+  // Save to localStorage whenever data changes
+  const saveToStorage = (key, value) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error(`Error saving ${key} to localStorage:`, error);
+    }
+  };
+
+  // Enhanced setters that also save to localStorage
+  const setFormDataWithStorage = (newFormData) => {
+    if (typeof newFormData === "function") {
+      setformData((prev) => {
+        const updated = newFormData(prev);
+        saveToStorage("resumeFormData", updated);
+        return updated;
+      });
+    } else {
+      setformData(newFormData);
+      saveToStorage("resumeFormData", newFormData);
+    }
+  };
+
+  const setExperiencesWithStorage = (newExperiences) => {
+    if (typeof newExperiences === "function") {
+      setExperiences((prev) => {
+        const updated = newExperiences(prev);
+        saveToStorage("resumeExperiences", updated);
+        return updated;
+      });
+    } else {
+      setExperiences(newExperiences);
+      saveToStorage("resumeExperiences", newExperiences);
+    }
+  };
+
+  const setEducationDetailsListWithStorage = (newEducationDetailsList) => {
+    if (typeof newEducationDetailsList === "function") {
+      setEducationDetailsList((prev) => {
+        const updated = newEducationDetailsList(prev);
+        saveToStorage("resumeEducationDetails", updated);
+        return updated;
+      });
+    } else {
+      setEducationDetailsList(newEducationDetailsList);
+      saveToStorage("resumeEducationDetails", newEducationDetailsList);
+    }
+  };
+
+  const setSkillListWithStorage = (newSkillList) => {
+    if (typeof newSkillList === "function") {
+      setSkillList((prev) => {
+        const updated = newSkillList(prev);
+        saveToStorage("resumeSkillList", updated);
+        return updated;
+      });
+    } else {
+      setSkillList(newSkillList);
+      saveToStorage("resumeSkillList", newSkillList);
+    }
+  };
+
+  const setSelectedLayoutWithStorage = (newLayout) => {
+    setSelectedLayout(newLayout);
+    saveToStorage("resumeSelectedLayout", newLayout);
+  };
+
+  // Clear all resume data from localStorage and reset state
+  const clearResumeData = () => {
+    try {
+      localStorage.removeItem("resumeFormData");
+      localStorage.removeItem("resumeExperiences");
+      localStorage.removeItem("resumeEducationDetails");
+      localStorage.removeItem("resumeSkillList");
+      localStorage.removeItem("resumeSelectedLayout");
+
+      // Reset all state to default values
+      setformData({
+        introduction: {
+          fullName: "",
+          linkedin: "",
+          email: "",
+          phone: "",
+        },
+        profileSummary: "",
+      });
+      setExperiences([]);
+      setEducationDetailsList([]);
+      setSkillList([]);
+      setSelectedLayout("classic");
+    } catch (error) {
+      console.error("Error clearing resume data:", error);
+    }
+  };
 
   // Generate profile summary using AI via Supabase Edge Function
   const generateProfileSummary = async () => {
@@ -67,7 +183,7 @@ const ResumeProvider = ({ children }) => {
       }
 
       if (data && data.summary) {
-        setformData((prev) => ({
+        setFormDataWithStorage((prev) => ({
           ...prev,
           profileSummary: data.summary,
         }));
@@ -134,23 +250,24 @@ const ResumeProvider = ({ children }) => {
     <ResumeContext.Provider
       value={{
         formData,
-        setformData,
+        setformData: setFormDataWithStorage,
         experiences,
-        setExperiences,
+        setExperiences: setExperiencesWithStorage,
         educationDetailsList,
-        setEducationDetailsList,
+        setEducationDetailsList: setEducationDetailsListWithStorage,
         skillList,
-        setSkillList,
+        setSkillList: setSkillListWithStorage,
         isGenerating,
         generateProfileSummary,
         generateProjectDescription,
         selectedLayout,
-        setSelectedLayout,
+        setSelectedLayout: setSelectedLayoutWithStorage,
         user,
         setUser,
         isAuthenticating,
         setIsAuthenticating,
         supabase,
+        clearResumeData,
       }}
     >
       {children}

@@ -40,8 +40,14 @@ const LayoutSelector = () => {
 };
 
 const ProfileSection = () => {
-  const { user, setUser, supabase, isAuthenticating, setIsAuthenticating } =
-    useContext(ResumeContext);
+  const {
+    user,
+    setUser,
+    supabase,
+    isAuthenticating,
+    setIsAuthenticating,
+    clearResumeData,
+  } = useContext(ResumeContext);
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   const [showLoginModal, setShowLoginModal] = React.useState(false);
 
@@ -53,6 +59,8 @@ const ProfileSection = () => {
         alert("Failed to logout. Please try again.");
       } else {
         setUser(null);
+        // Clear all resume data from localStorage when user logs out
+        clearResumeData();
       }
     } catch (error) {
       console.error("Logout error:", error);
