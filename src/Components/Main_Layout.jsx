@@ -50,14 +50,61 @@ const ProfileSection = () => {
   } = useContext(ResumeContext);
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   const [showLoginModal, setShowLoginModal] = React.useState(false);
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth event:", event);
 
+      if (event === "SIGNED_IN" && session?.user) {
+        console.log("✅ User signed in:", session.user.email);
+
+        const userData = {
+          id: session.user.id,
+          email: session.user.email,
+          created_at: session.user.created_at,
+          last_login: new Date().toISOString(),
+        };
+
+        const { error } = await supabase.from("users").upsert(userData, {
+          onConflict: "id",
+        });
+
+        if (error) {
+          console.error("❌ Upsert error:", error);
+        } else {
+          console.log("✅ Upsert success");
+        }
+
+        setUser(session.user); // update your app's user state
+        setIsAuthenticating(false);
+
+        if (shouldAutoDownload) {
+          downloadPDF();
+          setShouldAutoDownload(false);
+        }
+      }
+
+      if (event === "SIGNED_OUT") {
+        console.log("🚪 User signed out");
+        setUser(null);
+        clearResumeData(); // Optional: clean up on logout
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
   const handleLogout = async () => {
+    console.log("Inside Logout");
     try {
+      console.log("Before auth logout");
       const { error } = await supabase.auth.signOut();
+      //const result = await supabase.auth.signOut();
       if (error) {
         console.error("Logout error:", error);
         alert("Failed to logout. Please try again.");
       } else {
+        console.log("loggin out");
         setUser(null);
         // Clear all resume data from localStorage when user logs out
         clearResumeData();

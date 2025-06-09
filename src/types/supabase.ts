@@ -11,34 +11,25 @@ export type Database = {
     Tables: {
       users: {
         Row: {
-          avatar_url: string | null
-          created_at: string
-          email: string | null
-          full_name: string | null
+          created_at: string | null
+          email: string
           id: string
-          number_of_resumes_downloaded: number | null
-          premium_subscription: boolean | null
-          updated_at: string
+          last_login: string | null
+          subscription: boolean
         }
         Insert: {
-          avatar_url?: string | null
-          created_at?: string
-          email?: string | null
-          full_name?: string | null
+          created_at?: string | null
+          email: string
           id: string
-          number_of_resumes_downloaded?: number | null
-          premium_subscription?: boolean | null
-          updated_at?: string
+          last_login?: string | null
+          subscription?: boolean
         }
         Update: {
-          avatar_url?: string | null
-          created_at?: string
-          email?: string | null
-          full_name?: string | null
+          created_at?: string | null
+          email?: string
           id?: string
-          number_of_resumes_downloaded?: number | null
-          premium_subscription?: boolean | null
-          updated_at?: string
+          last_login?: string | null
+          subscription?: boolean
         }
         Relationships: []
       }

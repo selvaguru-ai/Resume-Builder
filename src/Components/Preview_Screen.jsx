@@ -26,13 +26,93 @@ const Preview_Screen = () => {
   const [shouldAutoDownload, setShouldAutoDownload] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  // Listen for auth state changes for PDF download
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth event:", event);
+
+      if (event === "SIGNED_IN" && session?.user) {
+        console.log("✅ User signed in:", session.user.email);
+
+        const userData = {
+          id: session.user.id,
+          email: session.user.email,
+          created_at: session.user.created_at,
+          last_login: new Date().toISOString(),
+        };
+
+        const { error } = await supabase.from("users").upsert(userData, {
+          onConflict: "id",
+        });
+
+        if (error) {
+          console.error("❌ Upsert error:", error);
+        } else {
+          console.log("✅ Upsert success");
+        }
+
+        setUser(session.user); // update your app's user state
+        setIsAuthenticating(false);
+
+        if (shouldAutoDownload) {
+          downloadPDF();
+          setShouldAutoDownload(false);
+        }
+      }
+
+      if (event === "SIGNED_OUT") {
+        console.log("🚪 User signed out");
+        setUser(null);
+        clearResumeData(); // Optional: clean up on logout
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
+
+  // Listen for auth state changes for PDF download
+  {
+    /*useEffect(() => {
+    if (!supabase) return;
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session?.user?.email);
-      if (event === "SIGNED_IN" && session?.user && shouldAutoDownload) {
+      console.log("User ID:", session?.user?.id);
+      console.log("Event:", event);
+      console.log("Session user:", session?.user);
+      console.log("shouldAutoDownload:", shouldAutoDownload);
+      console.log("SUPABASE", supabase);
+
+      if (event === "SIGNED_IN" && session?.user) {
+        console.log("🔥 Inside SIGNED_IN block");
+        const userData = {
+          id: session.user.id,
+          email: session.user.email,
+          created_at: session.user.created_at,
+          last_login: new Date().toISOString(),
+        };
+        try {
+          // insert if not exist, else update last login
+
+          const { data, error } = await supabase.from("users").upsert(
+            {
+              id: userData.id,
+              email: userData.email,
+              created_at: userData.created_at,
+              last_login: userData.last_login,
+            },
+            {
+              onConflict: "id", //This tells supabase to update if ID already exists
+            },
+          );
+        } catch (error) {
+          console.error("Upsert error:", error.message, error.details);
+          console.log("Upsert response:", data);
+          // console.error("Error inserting/updating user:", error.message);
+        }
         setIsAuthenticating(false);
         setShouldAutoDownload(false); // Reset the flag
         // Auto-download PDF after successful sign-in
@@ -43,11 +123,14 @@ const Preview_Screen = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [shouldAutoDownload]);
+  }, [shouldAutoDownload, supabase]); */
+  }
 
   // Handle Google Sign-In
   const handleGoogleSignIn = async () => {
+    console.log("handle google signin");
     setIsAuthenticating(true);
+    console.log("handle google signin");
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -59,13 +142,6 @@ const Preview_Screen = () => {
           },
         },
       });
-
-      if (error) {
-        console.error("Error", error);
-        throw error;
-      }
-
-      return true;
     } catch (error) {
       console.error("Google Sign-In error:", error);
       alert(
