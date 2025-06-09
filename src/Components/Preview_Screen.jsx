@@ -64,7 +64,7 @@ const Preview_Screen = () => {
       if (event === "SIGNED_OUT") {
         console.log("🚪 User signed out");
         setUser(null);
-        clearResumeData(); // Optional: clean up on logout
+        //clearResumeData(); // Optional: clean up on logout
       }
     });
 

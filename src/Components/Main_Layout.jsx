@@ -79,10 +79,10 @@ const ProfileSection = () => {
         setUser(session.user); // update your app's user state
         setIsAuthenticating(false);
 
-        if (shouldAutoDownload) {
-          downloadPDF();
-          setShouldAutoDownload(false);
-        }
+        //if (shouldAutoDownload) {
+        // downloadPDF();
+        //setShouldAutoDownload(false);
+        //}
       }
 
       if (event === "SIGNED_OUT") {
