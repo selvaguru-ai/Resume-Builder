@@ -1,15 +1,21 @@
 import React, { createContext, useState, useMemo } from "react";
 import { createClient } from "@supabase/supabase-js";
+import { useAuth } from "./useAuth";
 
 //Create a context
 const ResumeContext = createContext(null);
 
-// Initialize Supabase client outside component to prevent multiple instances
+// Initialize Supabase client as a singleton to prevent multiple instances
+let supabaseInstance = null;
+
 const getSupabaseClient = () => {
-  return createClient(
-    import.meta.env.VITE_SUPABASE_URL || "",
-    import.meta.env.VITE_SUPABASE_ANON_KEY || "",
-  );
+  if (!supabaseInstance) {
+    supabaseInstance = createClient(
+      import.meta.env.VITE_SUPABASE_URL || "",
+      import.meta.env.VITE_SUPABASE_ANON_KEY || "",
+    );
+  }
+  return supabaseInstance;
 };
 
 //Create a provider
@@ -50,11 +56,19 @@ const ResumeProvider = ({ children }) => {
   const [selectedLayout, setSelectedLayout] = useState(() =>
     loadFromStorage("resumeSelectedLayout", "classic"),
   );
-  const [user, setUser] = useState(null);
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  // Use the singleton Supabase client
+  const supabase = getSupabaseClient();
 
-  // Memoize Supabase client to prevent re-creation on every render
-  const supabase = useMemo(() => getSupabaseClient(), []);
+  // Use the custom auth hook
+  const {
+    user,
+    setUser,
+    isAuthenticating,
+    setIsAuthenticating,
+    handleGoogleSignIn,
+    handleLogout,
+    checkAuthStatus,
+  } = useAuth(supabase);
 
   // Save to localStorage whenever data changes
   const saveToStorage = (key, value) => {
@@ -266,6 +280,9 @@ const ResumeProvider = ({ children }) => {
         setUser,
         isAuthenticating,
         setIsAuthenticating,
+        handleGoogleSignIn,
+        handleLogout,
+        checkAuthStatus,
         supabase,
         clearResumeData,
       }}

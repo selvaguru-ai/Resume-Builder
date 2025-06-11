@@ -17,155 +17,27 @@ const Preview_Screen = () => {
     educationDetailsList,
     selectedLayout,
     user,
-    setUser,
     isAuthenticating,
-    setIsAuthenticating,
+    handleGoogleSignIn,
+    checkAuthStatus,
     supabase,
   } = useContext(ResumeContext) || {};
 
   const [shouldAutoDownload, setShouldAutoDownload] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showLoginAlert, setShowLoginAlert] = useState(false);
 
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth event:", event);
-
-      if (event === "SIGNED_IN" && session?.user) {
-        console.log("✅ User signed in:", session.user.email);
-
-        const userData = {
-          id: session.user.id,
-          email: session.user.email,
-          created_at: session.user.created_at,
-          last_login: new Date().toISOString(),
-        };
-
-        const { error } = await supabase.from("users").upsert(userData, {
-          onConflict: "id",
-        });
-
-        if (error) {
-          console.error("❌ Upsert error:", error);
-        } else {
-          console.log("✅ Upsert success");
-        }
-
-        setUser(session.user); // update your app's user state
-        setIsAuthenticating(false);
-
-        if (shouldAutoDownload) {
-          downloadPDF();
-          setShouldAutoDownload(false);
-        }
-      }
-
-      if (event === "SIGNED_OUT") {
-        console.log("🚪 User signed out");
-        setUser(null);
-        //clearResumeData(); // Optional: clean up on logout
+      if (event === "SIGNED_IN" && session?.user && shouldAutoDownload) {
+        downloadPDF();
+        setShouldAutoDownload(false);
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase]);
-
-  // Listen for auth state changes for PDF download
-  {
-    /*useEffect(() => {
-    if (!supabase) return;
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event, session?.user?.email);
-      console.log("User ID:", session?.user?.id);
-      console.log("Event:", event);
-      console.log("Session user:", session?.user);
-      console.log("shouldAutoDownload:", shouldAutoDownload);
-      console.log("SUPABASE", supabase);
-
-      if (event === "SIGNED_IN" && session?.user) {
-        console.log("🔥 Inside SIGNED_IN block");
-        const userData = {
-          id: session.user.id,
-          email: session.user.email,
-          created_at: session.user.created_at,
-          last_login: new Date().toISOString(),
-        };
-        try {
-          // insert if not exist, else update last login
-
-          const { data, error } = await supabase.from("users").upsert(
-            {
-              id: userData.id,
-              email: userData.email,
-              created_at: userData.created_at,
-              last_login: userData.last_login,
-            },
-            {
-              onConflict: "id", //This tells supabase to update if ID already exists
-            },
-          );
-        } catch (error) {
-          console.error("Upsert error:", error.message, error.details);
-          console.log("Upsert response:", data);
-          // console.error("Error inserting/updating user:", error.message);
-        }
-        setIsAuthenticating(false);
-        setShouldAutoDownload(false); // Reset the flag
-        // Auto-download PDF after successful sign-in
-        setTimeout(() => {
-          downloadPDF();
-        }, 1000);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [shouldAutoDownload, supabase]); */
-  }
-
-  // Handle Google Sign-In
-  const handleGoogleSignIn = async () => {
-    console.log("handle google signin");
-    setIsAuthenticating(true);
-    console.log("handle google signin");
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}${window.location.pathname}`,
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
-        },
-      });
-    } catch (error) {
-      console.error("Google Sign-In error:", error);
-      alert(
-        `Failed to sign in with Google: ${error.message}. Please try again.`,
-      );
-      return false;
-    } finally {
-      setIsAuthenticating(false);
-      setShowLoginModal(false);
-    }
-  };
-
-  // Check current authentication status
-  const checkAuthStatus = async () => {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      return user;
-    } catch (error) {
-      console.error("Auth check error:", error);
-      return null;
-    }
-  };
+  }, [supabase, shouldAutoDownload]);
 
   // Handle download with authentication
   const handleDownloadClick = async () => {
@@ -176,9 +48,12 @@ const Preview_Screen = () => {
       // User is authenticated, proceed with download
       downloadPDF();
     } else {
-      // User is not authenticated, show login modal
-      setShouldAutoDownload(true);
-      setShowLoginModal(true);
+      // User is not authenticated, show alert
+      setShowLoginAlert(true);
+      // Auto-hide alert after 5 seconds
+      setTimeout(() => {
+        setShowLoginAlert(false);
+      }, 5000);
     }
   };
   const downloadPDF = () => {
@@ -323,80 +198,39 @@ const Preview_Screen = () => {
 
   return (
     <div className="position-relative">
-      {/* Login Modal */}
-      <Modal
-        show={showLoginModal}
-        onHide={() => setShowLoginModal(false)}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Sign In Required</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="text-center py-4">
-          <div className="mb-3">
+      {/* Login Alert */}
+      {showLoginAlert && (
+        <div
+          className="alert alert-warning alert-dismissible fade show mb-3"
+          role="alert"
+          style={{
+            borderRadius: "8px",
+            border: "1px solid #ffc107",
+            backgroundColor: "#fff3cd",
+            color: "#856404",
+          }}
+        >
+          <div className="d-flex align-items-center">
             <i
-              className="bi bi-lock-fill"
-              style={{ fontSize: "2rem", color: "#6c757d" }}
+              className="bi bi-exclamation-triangle-fill me-2"
+              style={{ fontSize: "1.2rem" }}
             ></i>
+            <div className="flex-grow-1">
+              <strong>Sign In Required</strong>
+              <div className="mt-1">
+                Please sign in to download your resume. Use the profile menu in
+                the top right corner to log in.
+              </div>
+            </div>
+            <button
+              type="button"
+              className="btn-close"
+              onClick={() => setShowLoginAlert(false)}
+              aria-label="Close"
+            ></button>
           </div>
-          <h5 className="mb-3">Please sign in to download your resume</h5>
-          <p className="text-muted mb-4">
-            We require authentication to ensure secure access to your resume.
-          </p>
-          <Button
-            variant="primary"
-            onClick={handleGoogleSignIn}
-            disabled={isAuthenticating}
-            className="d-flex align-items-center justify-content-center mx-auto"
-            style={{
-              backgroundColor: "#4285f4",
-              borderColor: "#4285f4",
-              padding: "10px 20px",
-              fontSize: "1rem",
-              fontWeight: "500",
-            }}
-          >
-            {isAuthenticating ? (
-              <>
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-                Signing in...
-              </>
-            ) : (
-              <>
-                <svg
-                  className="me-2"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    fill="#4285F4"
-                  />
-                  <path
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    fill="#34A853"
-                  />
-                  <path
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    fill="#FBBC05"
-                  />
-                  <path
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    fill="#EA4335"
-                  />
-                </svg>
-                Continue with Google
-              </>
-            )}
-          </Button>
-        </Modal.Body>
-      </Modal>
+        </div>
+      )}
 
       {/* Download PDF Button */}
       <div className="d-flex justify-content-end mb-3">

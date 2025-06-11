@@ -63,7 +63,7 @@ const First_Menu = () => {
               country={"us"}
               name="phone"
               id="phone"
-              inputClass="form-control"
+              className="form-control"
               placeholder="phone number"
               value={formData.introduction.phone}
               onChange={handlePhoneChange}
@@ -76,7 +76,7 @@ const First_Menu = () => {
                 name="linkedin"
                 id="linkedin"
                 placeholder="LinkedIn"
-                inputClass="form-control"
+                className="form-control"
                 value={formData.introduction.linkedin}
                 onChange={handleChange}
                 style={{ width: "100%" }}
