@@ -44,11 +44,11 @@ export const useAuth = (supabase) => {
           redirectTo: `${window.location.origin}${window.location.pathname}`,
           queryParams: {
             access_type: "offline",
-            prompt: "consent",
+            prompt: "select_account",
           },
         },
       });
-
+      console.log(redirectTo);
       if (error) {
         console.error("Google Sign-In error:", error);
         throw error;
@@ -68,14 +68,18 @@ export const useAuth = (supabase) => {
 
   // Handle logout
   const handleLogout = useCallback(async () => {
-    console.log("Inside handleLogout function");
+    //console.log("Inside handleLogout function");
     try {
-      console.log("Error");
-      console.log("Supabase instance:", supabase);
+      //console.log("Error");
+      //console.log("Supabase instance:", supabase);
+      //const { data, error: sessionError } = await supabase.auth.getSession();
+      //console.log("Session (rehydrated):", data?.session);
+
       // Force rehydration of session from storage (best workaround)
+      //setUser(null);
       const { error } = await supabase.auth.signOut();
       console.log(error);
-      setUser(null);
+
       //console.log("Error:", error);
       if (error) {
         console.error("Logout error:", error);
@@ -91,7 +95,7 @@ export const useAuth = (supabase) => {
       alert("Failed to logout. Please try again.");
       return false;
     }
-  });
+  }, [supabase]);
 
   // Check current authentication status
   const checkAuthStatus = useCallback(async () => {

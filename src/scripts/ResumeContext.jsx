@@ -1,22 +1,13 @@
 import React, { createContext, useState, useMemo } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useAuth } from "./useAuth";
-
+import { supabase } from "./supabaseClient";
 //Create a context
 const ResumeContext = createContext(null);
 
 // Initialize Supabase client as a singleton to prevent multiple instances
 let supabaseInstance = null;
-
-const getSupabaseClient = () => {
-  if (!supabaseInstance) {
-    supabaseInstance = createClient(
-      import.meta.env.VITE_SUPABASE_URL || "",
-      import.meta.env.VITE_SUPABASE_ANON_KEY || "",
-    );
-  }
-  return supabaseInstance;
-};
+console.log("Inside resume context");
 
 //Create a provider
 const ResumeProvider = ({ children }) => {
@@ -56,8 +47,6 @@ const ResumeProvider = ({ children }) => {
   const [selectedLayout, setSelectedLayout] = useState(() =>
     loadFromStorage("resumeSelectedLayout", "classic"),
   );
-  // Use the singleton Supabase client
-  const supabase = getSupabaseClient();
 
   // Use the custom auth hook
   const {

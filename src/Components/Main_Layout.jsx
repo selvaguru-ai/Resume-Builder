@@ -49,6 +49,7 @@ const ProfileSection = () => {
   } = useContext(ResumeContext);
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   const [showLoginModal, setShowLoginModal] = React.useState(false);
+
   const handleLogoutWithCleanup = async () => {
     console.log("Logout button is pressed");
     const success = await handleLogout();
