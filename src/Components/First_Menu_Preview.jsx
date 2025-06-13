@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import emailIcon from "../assets/envelope-solid.png";
 import phoneIcon from "../assets/phone-solid.png";
-import linkedinIcon from "../assets/linkedin.svg";
+import linkedinIcon from "../assets/linkedin.png";
 import { ResumeContext } from "../scripts/ResumeContext";
 
 const First_Menu_Preview = () => {
@@ -186,13 +186,7 @@ const First_Menu_Preview = () => {
                 alt="LinkedIn"
                 width="12"
                 height="12"
-                style={{
-                  marginRight: "5px",
-                  minWidth: "12px",
-                  minHeight: "12px",
-                  flexShrink: 0,
-                  display: "inline-block",
-                }}
+                style={{ marginRight: "5px" }}
               />
               <a
                 href={formData.introduction.linkedin}
