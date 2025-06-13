@@ -44,7 +44,7 @@ export const useAuth = (supabase) => {
           redirectTo: `${window.location.origin}${window.location.pathname}`,
           queryParams: {
             access_type: "offline",
-            prompt: "select_account",
+            prompt: "consent",
           },
         },
       });
@@ -68,19 +68,9 @@ export const useAuth = (supabase) => {
 
   // Handle logout
   const handleLogout = useCallback(async () => {
-    //console.log("Inside handleLogout function");
     try {
-      //console.log("Error");
-      //console.log("Supabase instance:", supabase);
-      //const { data, error: sessionError } = await supabase.auth.getSession();
-      //console.log("Session (rehydrated):", data?.session);
-
-      // Force rehydration of session from storage (best workaround)
-      //setUser(null);
       const { error } = await supabase.auth.signOut();
       console.log(error);
-
-      //console.log("Error:", error);
       if (error) {
         console.error("Logout error:", error);
         alert("Failed to logout. Please try again.");
@@ -140,7 +130,6 @@ export const useAuth = (supabase) => {
         setUser(currentUser);
       }
     };
-
     checkInitialAuth();
 
     return () => subscription.unsubscribe();

@@ -58,9 +58,38 @@ const Preview_Screen = () => {
   };
   const downloadPDF = () => {
     const element = document.getElementById("resume-preview");
+    if (!element) {
+      console.error("Resume preview element not found");
+      return;
+    }
+
+    // Clean up any existing temporary elements first
+    const cleanupTempElements = () => {
+      // Remove any existing styles with the same ID
+      const existingStyle = document.getElementById("pdf-temp-style");
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+
+      // Remove any existing footer
+      const existingFooter = element.querySelector(".pdf-footer");
+      if (existingFooter) {
+        existingFooter.remove();
+      }
+
+      // Remove any existing empty line
+      const existingEmptyLine = element.querySelector(".pdf-empty-line");
+      if (existingEmptyLine) {
+        existingEmptyLine.remove();
+      }
+    };
+
+    // Clean up before starting
+    cleanupTempElements();
 
     // Add CSS styles to allow line-level page breaks and footer
     const style = document.createElement("style");
+    style.id = "pdf-temp-style";
     style.textContent = `
       @media print {
         .resume-preview {
@@ -115,6 +144,7 @@ const Preview_Screen = () => {
 
     // Add empty line before footer to prevent text breaking
     const emptyLine = document.createElement("div");
+    emptyLine.className = "pdf-empty-line";
     emptyLine.style.height = "20px";
     emptyLine.innerHTML = "&nbsp;";
     element.appendChild(emptyLine);
@@ -162,37 +192,18 @@ const Preview_Screen = () => {
       .get("pdf")
       .then((pdf) => {
         const totalPages = pdf.internal.getNumberOfPages();
-
         // Page numbering removed to fix '/' symbol issue
-
         return pdf;
       })
       .save()
       .then(() => {
-        // Remove the temporary style, empty line, and footer after PDF generation
-        document.head.removeChild(style);
-        const footerElement = element.querySelector(".pdf-footer");
-        if (footerElement) {
-          element.removeChild(footerElement);
-        }
-        // Remove the empty line element
-        const emptyLineElement = element.children[element.children.length - 2];
-        if (emptyLineElement && emptyLineElement.innerHTML === "&nbsp;") {
-          element.removeChild(emptyLineElement);
-        }
+        // Clean up temporary elements after successful PDF generation
+        cleanupTempElements();
       })
       .catch((error) => {
         console.error("PDF generation failed:", error);
-        document.head.removeChild(style);
-        const footerElement = element.querySelector(".pdf-footer");
-        if (footerElement) {
-          element.removeChild(footerElement);
-        }
-        // Remove the empty line element on error
-        const emptyLineElement = element.children[element.children.length - 2];
-        if (emptyLineElement && emptyLineElement.innerHTML === "&nbsp;") {
-          element.removeChild(emptyLineElement);
-        }
+        // Clean up temporary elements on error
+        cleanupTempElements();
       });
   };
 

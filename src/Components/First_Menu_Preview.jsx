@@ -95,7 +95,13 @@ const First_Menu_Preview = () => {
                 alt="LinkedIn"
                 width="12"
                 height="12"
-                style={{ marginRight: "5px" }}
+                style={{
+                  marginRight: "5px",
+                  minWidth: "12px",
+                  minHeight: "12px",
+                  flexShrink: 0,
+                  display: "inline-block",
+                }}
               />
               <a
                 href={formData.introduction.linkedin}
@@ -113,6 +119,97 @@ const First_Menu_Preview = () => {
           )}
         </div>
         <div className="blue-separator"></div>
+      </>
+    );
+  }
+
+  // For modern layout, align contact details to the left
+  if (selectedLayout === "modern") {
+    return (
+      <>
+        {/* Full Name */}
+        {formData?.introduction?.fullName && (
+          <h3
+            style={{
+              fontSize: "18px",
+              fontWeight: "bold",
+              marginBottom: "8px",
+              textAlign: "left",
+            }}
+          >
+            {formData.introduction.fullName}
+          </h3>
+        )}
+
+        {/* Contact Information - Horizontal Layout */}
+        <div
+          className="d-flex align-items-center gap-3"
+          style={{ textAlign: "left", marginBottom: "12px" }}
+        >
+          {/* Email */}
+          {formData?.introduction?.email && (
+            <div className="d-flex align-items-center">
+              <img
+                src={emailIcon}
+                alt="Email"
+                width="12"
+                height="12"
+                style={{ marginRight: "5px" }}
+              />
+              <span style={{ fontSize: "10px", color: "#007bff" }}>
+                {formData.introduction.email}
+              </span>
+            </div>
+          )}
+
+          {/* Phone */}
+          {formData?.introduction?.phone && (
+            <div className="d-flex align-items-center">
+              <img
+                src={phoneIcon}
+                alt="Phone"
+                width="12"
+                height="12"
+                style={{ marginRight: "5px" }}
+              />
+              <span style={{ fontSize: "10px", color: "#007bff" }}>
+                {formData.introduction.phone}
+              </span>
+            </div>
+          )}
+
+          {/* LinkedIn */}
+          {formData?.introduction?.linkedin && (
+            <div className="d-flex align-items-center">
+              <img
+                src={linkedinIcon}
+                alt="LinkedIn"
+                width="12"
+                height="12"
+                style={{
+                  marginRight: "5px",
+                  minWidth: "12px",
+                  minHeight: "12px",
+                  flexShrink: 0,
+                  display: "inline-block",
+                }}
+              />
+              <a
+                href={formData.introduction.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: "10px",
+                  textDecoration: "none",
+                  color: "#007bff",
+                  wordBreak: "break-word",
+                }}
+              >
+                {formData.introduction.linkedin}
+              </a>
+            </div>
+          )}
+        </div>
       </>
     );
   }
@@ -178,7 +275,13 @@ const First_Menu_Preview = () => {
                 alt="LinkedIn"
                 width="12"
                 height="12"
-                style={{ marginRight: "5px" }}
+                style={{
+                  marginRight: "5px",
+                  minWidth: "12px",
+                  minHeight: "12px",
+                  flexShrink: 0,
+                  display: "inline-block",
+                }}
               />
               <a
                 href={formData.introduction.linkedin}

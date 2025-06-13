@@ -2,7 +2,7 @@ import React, { createContext, useState, useMemo } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useAuth } from "./useAuth";
 import { supabase } from "./supabaseClient";
-//Create a context
+//Create a context.
 const ResumeContext = createContext(null);
 
 // Initialize Supabase client as a singleton to prevent multiple instances
