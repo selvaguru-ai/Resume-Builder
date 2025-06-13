@@ -1,6 +1,4 @@
-import React, { createContext, useState, useMemo } from "react";
-import { createClient } from "@supabase/supabase-js";
-import { useAuth } from "./useAuth";
+import React, { createContext, useState } from "react";
 import { supabase } from "./supabaseClient";
 //Create a context.
 const ResumeContext = createContext(null);
@@ -47,17 +45,6 @@ const ResumeProvider = ({ children }) => {
   const [selectedLayout, setSelectedLayout] = useState(() =>
     loadFromStorage("resumeSelectedLayout", "classic"),
   );
-
-  // Use the custom auth hook
-  const {
-    user,
-    setUser,
-    isAuthenticating,
-    setIsAuthenticating,
-    handleGoogleSignIn,
-    handleLogout,
-    checkAuthStatus,
-  } = useAuth(supabase);
 
   // Save to localStorage whenever data changes
   const saveToStorage = (key, value) => {
@@ -124,34 +111,6 @@ const ResumeProvider = ({ children }) => {
   const setSelectedLayoutWithStorage = (newLayout) => {
     setSelectedLayout(newLayout);
     saveToStorage("resumeSelectedLayout", newLayout);
-  };
-
-  // Clear all resume data from localStorage and reset state
-  const clearResumeData = () => {
-    try {
-      localStorage.removeItem("resumeFormData");
-      localStorage.removeItem("resumeExperiences");
-      localStorage.removeItem("resumeEducationDetails");
-      localStorage.removeItem("resumeSkillList");
-      localStorage.removeItem("resumeSelectedLayout");
-
-      // Reset all state to default values
-      setformData({
-        introduction: {
-          fullName: "",
-          linkedin: "",
-          email: "",
-          phone: "",
-        },
-        profileSummary: "",
-      });
-      setExperiences([]);
-      setEducationDetailsList([]);
-      setSkillList([]);
-      setSelectedLayout("classic");
-    } catch (error) {
-      console.error("Error clearing resume data:", error);
-    }
   };
 
   // Generate profile summary using AI via Supabase Edge Function
@@ -265,15 +224,7 @@ const ResumeProvider = ({ children }) => {
         generateProjectDescription,
         selectedLayout,
         setSelectedLayout: setSelectedLayoutWithStorage,
-        user,
-        setUser,
-        isAuthenticating,
-        setIsAuthenticating,
-        handleGoogleSignIn,
-        handleLogout,
-        checkAuthStatus,
         supabase,
-        clearResumeData,
       }}
     >
       {children}

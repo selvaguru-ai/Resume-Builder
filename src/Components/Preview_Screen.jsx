@@ -1,8 +1,6 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import html2pdf from "html2pdf.js";
 import { ResumeContext } from "../scripts/ResumeContext";
-import { createClient } from "@supabase/supabase-js";
-import { Modal, Button } from "react-bootstrap";
 
 import First_Menu_Preview from "./First_Menu_Preview";
 import Second_Menu_Preview from "./Second_Menu_Preview";
@@ -11,50 +9,12 @@ import Fourth_Menu_Preview from "./Fourth_Menu_Preview";
 import Fifth_Menu_Preview from "./Fifth_Menu_Preview";
 
 const Preview_Screen = () => {
-  const {
-    formData,
-    experiences,
-    educationDetailsList,
-    selectedLayout,
-    user,
-    isAuthenticating,
-    handleGoogleSignIn,
-    checkAuthStatus,
-    supabase,
-  } = useContext(ResumeContext) || {};
+  const { formData, experiences, educationDetailsList, selectedLayout } =
+    useContext(ResumeContext) || {};
 
-  const [shouldAutoDownload, setShouldAutoDownload] = useState(false);
-  const [showLoginAlert, setShowLoginAlert] = useState(false);
-
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session?.user && shouldAutoDownload) {
-        downloadPDF();
-        setShouldAutoDownload(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [supabase, shouldAutoDownload]);
-
-  // Handle download with authentication
-  const handleDownloadClick = async () => {
-    // Check if user is already authenticated
-    const currentUser = await checkAuthStatus();
-
-    if (currentUser) {
-      // User is authenticated, proceed with download
-      downloadPDF();
-    } else {
-      // User is not authenticated, show alert
-      setShowLoginAlert(true);
-      // Auto-hide alert after 5 seconds
-      setTimeout(() => {
-        setShowLoginAlert(false);
-      }, 5000);
-    }
+  // Handle download without authentication
+  const handleDownloadClick = () => {
+    downloadPDF();
   };
   const downloadPDF = () => {
     const element = document.getElementById("resume-preview");
@@ -209,84 +169,32 @@ const Preview_Screen = () => {
 
   return (
     <div className="position-relative">
-      {/* Login Alert */}
-      {showLoginAlert && (
-        <div
-          className="alert alert-warning alert-dismissible fade show mb-3"
-          role="alert"
-          style={{
-            borderRadius: "8px",
-            border: "1px solid #ffc107",
-            backgroundColor: "#fff3cd",
-            color: "#856404",
-          }}
-        >
-          <div className="d-flex align-items-center">
-            <i
-              className="bi bi-exclamation-triangle-fill me-2"
-              style={{ fontSize: "1.2rem" }}
-            ></i>
-            <div className="flex-grow-1">
-              <strong>Sign In Required</strong>
-              <div className="mt-1">
-                Please sign in to download your resume. Use the profile menu in
-                the top right corner to log in.
-              </div>
-            </div>
-            <button
-              type="button"
-              className="btn-close"
-              onClick={() => setShowLoginAlert(false)}
-              aria-label="Close"
-            ></button>
-          </div>
-        </div>
-      )}
-
       {/* Download PDF Button */}
       <div className="d-flex justify-content-end mb-3">
         <button
           className="btn btn-success btn-sm shadow-sm"
           onClick={handleDownloadClick}
-          disabled={isAuthenticating}
           style={{
             borderRadius: "8px",
             fontWeight: "500",
             padding: "8px 16px",
             fontSize: "0.9rem",
-            backgroundColor: isAuthenticating ? "#6c757d" : "#28a745",
+            backgroundColor: "#28a745",
             border: "none",
             transition: "all 0.2s ease",
-            cursor: isAuthenticating ? "not-allowed" : "pointer",
+            cursor: "pointer",
           }}
           onMouseOver={(e) => {
-            if (!isAuthenticating) {
-              e.target.style.backgroundColor = "#218838";
-              e.target.style.transform = "translateY(-1px)";
-            }
+            e.target.style.backgroundColor = "#218838";
+            e.target.style.transform = "translateY(-1px)";
           }}
           onMouseOut={(e) => {
-            if (!isAuthenticating) {
-              e.target.style.backgroundColor = "#28a745";
-              e.target.style.transform = "translateY(0)";
-            }
+            e.target.style.backgroundColor = "#28a745";
+            e.target.style.transform = "translateY(0)";
           }}
         >
-          {isAuthenticating ? (
-            <>
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              Signing in...
-            </>
-          ) : (
-            <>
-              <i className="bi bi-download me-2"></i>
-              Download PDF
-            </>
-          )}
+          <i className="bi bi-download me-2"></i>
+          Download PDF
         </button>
       </div>
 
