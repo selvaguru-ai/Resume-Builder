@@ -28,64 +28,58 @@ const First_Menu_Preview = () => {
 
         {/* Contact Info */}
         <div
-          className="d-flex flex-column align-items-center gap-1"
-          style={{
-            marginBottom: "12px",
-            fontSize: "14px",
-          }}
+          className="d-flex justify-content-center align-items-center gap-3 flex-wrap"
+          style={{ textAlign: "center", marginBottom: "12px" }}
         >
-          <div
-            className="d-flex justify-content-center align-items-center gap-4"
-            style={{ marginBottom: "5px" }}
-          >
-            {/* Email */}
-            {formData?.introduction?.email && (
-              <div className="d-flex align-items-center">
-                <img
-                  src={emailIcon}
-                  alt="Email"
-                  width="12"
-                  height="12"
-                  style={{ marginRight: "5px" }}
-                />
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: "none",
-                    color: "#3498db", // anchor tag needs it separately
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {formData.introduction.email}
-                </a>
-              </div>
-            )}
+          {/* Email */}
+          {formData?.introduction?.email && (
+            <div className="d-flex align-items-center">
+              <img
+                src={emailIcon}
+                alt="Email"
+                width="12"
+                height="12"
+                style={{ marginRight: "5px" }}
+              />
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: "10px",
+                  textDecoration: "none",
+                  color: "#3498db",
+                  wordBreak: "break-word",
+                }}
+              >
+                {formData.introduction.email}
+              </a>
+            </div>
+          )}
 
-            {/* Phone */}
-            {formData?.introduction?.phone && (
-              <div className="d-flex align-items-center">
-                <img
-                  src={phoneIcon}
-                  alt="Phone"
-                  width="12"
-                  height="12"
-                  style={{ marginRight: "5px" }}
-                />
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: "none",
-                    color: "#3498db", // anchor tag needs it separately
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {formData.introduction.phone}
-                </a>
-              </div>
-            )}
-          </div>
+          {/* Phone */}
+          {formData?.introduction?.phone && (
+            <div className="d-flex align-items-center">
+              <img
+                src={phoneIcon}
+                alt="Phone"
+                width="12"
+                height="12"
+                style={{ marginRight: "5px" }}
+              />
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: "10px",
+                  textDecoration: "none",
+                  color: "#3498db",
+                  wordBreak: "break-word",
+                }}
+              >
+                {formData.introduction.phone}
+              </a>
+            </div>
+          )}
 
           {/* LinkedIn */}
           {formData?.introduction?.linkedin && (
@@ -95,21 +89,16 @@ const First_Menu_Preview = () => {
                 alt="LinkedIn"
                 width="12"
                 height="12"
-                style={{
-                  marginRight: "5px",
-                  minWidth: "12px",
-                  minHeight: "12px",
-                  flexShrink: 0,
-                  display: "inline-block",
-                }}
+                style={{ marginRight: "5px" }}
               />
               <a
                 href={formData.introduction.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
+                  fontSize: "10px",
                   textDecoration: "none",
-                  color: "#3498db", // anchor tag needs it separately
+                  color: "#3498db",
                   wordBreak: "break-word",
                 }}
               >
@@ -195,7 +184,187 @@ const First_Menu_Preview = () => {
                 style={{
                   fontSize: "10px",
                   textDecoration: "none",
-                  color: "#007bff",
+                  color: "#000",
+                  wordBreak: "break-word",
+                }}
+              >
+                {formData.introduction.linkedin}
+              </a>
+            </div>
+          )}
+        </div>
+      </>
+    );
+  }
+
+  // For professional layout with blue header background
+  if (selectedLayout === "professional") {
+    return (
+      <div
+        className="layout-professional-header"
+        style={{
+          backgroundColor: "#e3f2fd",
+          padding: "20px",
+          marginBottom: "10px",
+          width: "100%",
+          margin: "0",
+        }}
+      >
+        {/* Full Name */}
+        {formData?.introduction?.fullName && (
+          <h3
+            style={{
+              fontSize: "18px",
+              fontWeight: "bold",
+              marginBottom: "8px",
+              textAlign: "center",
+              color: "#007bff",
+            }}
+          >
+            {formData.introduction.fullName}
+          </h3>
+        )}
+
+        {/* Contact Information - Horizontal Layout */}
+        <div
+          className="d-flex align-items-center gap-3"
+          style={{ textAlign: "left" }}
+        >
+          {/* Email */}
+          {formData?.introduction?.email && (
+            <div className="d-flex align-items-center">
+              <img
+                src={emailIcon}
+                alt="Email"
+                width="12"
+                height="12"
+                style={{ marginRight: "5px" }}
+              />
+              <span style={{ fontSize: "10px", color: "#007bff" }}>
+                {formData.introduction.email}
+              </span>
+            </div>
+          )}
+
+          {/* Phone */}
+          {formData?.introduction?.phone && (
+            <div className="d-flex align-items-center">
+              <img
+                src={phoneIcon}
+                alt="Phone"
+                width="12"
+                height="12"
+                style={{ marginRight: "5px" }}
+              />
+              <span style={{ fontSize: "10px", color: "#007bff" }}>
+                {formData.introduction.phone}
+              </span>
+            </div>
+          )}
+
+          {/* LinkedIn */}
+          {formData?.introduction?.linkedin && (
+            <div className="d-flex align-items-center">
+              <img
+                src={linkedinIcon}
+                alt="LinkedIn"
+                width="12"
+                height="12"
+                style={{ marginRight: "5px" }}
+              />
+              <a
+                href={formData.introduction.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: "10px",
+                  textDecoration: "none",
+                  color: "#000",
+                  wordBreak: "break-word",
+                }}
+              >
+                {formData.introduction.linkedin}
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // For minimal layout, use horizontal layout like modern
+  if (selectedLayout === "minimal") {
+    return (
+      <>
+        {/* Full Name */}
+        {formData?.introduction?.fullName && (
+          <h3
+            style={{
+              fontSize: "18px",
+              fontWeight: "bold",
+              marginBottom: "8px",
+              textAlign: "left",
+            }}
+          >
+            {formData.introduction.fullName}
+          </h3>
+        )}
+
+        {/* Contact Information - Horizontal Layout */}
+        <div
+          className="d-flex align-items-center gap-3"
+          style={{ textAlign: "left", marginBottom: "12px" }}
+        >
+          {/* Email */}
+          {formData?.introduction?.email && (
+            <div className="d-flex align-items-center">
+              <img
+                src={emailIcon}
+                alt="Email"
+                width="12"
+                height="12"
+                style={{ marginRight: "5px" }}
+              />
+              <span style={{ fontSize: "10px", color: "#007bff" }}>
+                {formData.introduction.email}
+              </span>
+            </div>
+          )}
+
+          {/* Phone */}
+          {formData?.introduction?.phone && (
+            <div className="d-flex align-items-center">
+              <img
+                src={phoneIcon}
+                alt="Phone"
+                width="12"
+                height="12"
+                style={{ marginRight: "5px" }}
+              />
+              <span style={{ fontSize: "10px", color: "#007bff" }}>
+                {formData.introduction.phone}
+              </span>
+            </div>
+          )}
+
+          {/* LinkedIn */}
+          {formData?.introduction?.linkedin && (
+            <div className="d-flex align-items-center">
+              <img
+                src={linkedinIcon}
+                alt="LinkedIn"
+                width="12"
+                height="12"
+                style={{ marginRight: "5px" }}
+              />
+              <a
+                href={formData.introduction.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: "10px",
+                  textDecoration: "none",
+                  color: "#000",
                   wordBreak: "break-word",
                 }}
               >

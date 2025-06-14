@@ -10,7 +10,7 @@ const LayoutSelector = () => {
     { id: "classic", name: "Classic", icon: "📄" },
     { id: "modern", name: "Modern", icon: "🎨" },
     { id: "minimal", name: "Minimal", icon: "✨" },
-    { id: "professional", name: "Professional", icon: "💼" },
+    //{ id: "professional", name: "Professional", icon: "💼" },
   ];
 
   return (

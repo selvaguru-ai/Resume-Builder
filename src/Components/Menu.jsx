@@ -59,7 +59,7 @@ const Menu = () => {
         <Fifth_Menu skillList={skillList} setSkillList={setSkillList} />
       )}
       <div className="row mt-3 text-center">
-        <div className="col-3 d-flex justify-content-start">
+        <div className="col-6 d-flex justify-content-start">
           {step > 1 && (
             <button className="btn btn-primary" onClick={prevStep}>
               Prev
@@ -67,11 +67,7 @@ const Menu = () => {
           )}
         </div>
 
-        <div className="col-6">
-          <button className="btn btn-primary">Update Resume</button>
-        </div>
-
-        <div className="col-3 d-flex justify-content-end">
+        <div className="col-6 d-flex justify-content-end">
           {step < 5 && (
             <button className="btn btn-primary" onClick={nextStep}>
               Next
