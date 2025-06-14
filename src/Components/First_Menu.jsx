@@ -59,15 +59,27 @@ const First_Menu = () => {
             </div>
           </div>
           <div className="row mt-3">
-            <PhoneInput
-              country={"us"}
-              name="phone"
-              id="phone"
-              className="form-control"
-              placeholder="phone number"
-              value={formData.introduction.phone}
-              onChange={handlePhoneChange}
-            />
+            <div className="col-12">
+              {" "}
+              {/* every row needs a col */}
+              <PhoneInput
+                country="us"
+                value={formData.introduction.phone}
+                onChange={handlePhoneChange}
+                /* Don’t use plain `className`; instead use the library’s hooks */
+                containerClass="w-100" // root div spans full width
+                inputClass="form-control" // keep Bootstrap input styles
+                buttonClass="btn btn-outline-secondary" // optional: style flag button
+                /* Pass standard input attributes via `inputProps` */
+                inputProps={{
+                  name: "phone",
+                  id: "phone",
+                  placeholder: "Phone number",
+                  required: true,
+                  autoComplete: "tel",
+                }}
+              />
+            </div>
           </div>
           <div className="row mt-3">
             <div className="col">

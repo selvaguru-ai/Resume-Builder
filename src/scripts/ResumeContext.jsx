@@ -113,6 +113,37 @@ const ResumeProvider = ({ children }) => {
     saveToStorage("resumeSelectedLayout", newLayout);
   };
 
+  // Reset all form data to initial state
+  const resetAllData = () => {
+    const initialFormData = {
+      introduction: {
+        fullName: "",
+        linkedin: "",
+        email: "",
+        phone: "",
+      },
+      profileSummary: "",
+    };
+    const initialExperiences = [];
+    const initialEducationDetails = [];
+    const initialSkillList = [];
+    const initialLayout = "classic";
+
+    // Update state
+    setformData(initialFormData);
+    setExperiences(initialExperiences);
+    setEducationDetailsList(initialEducationDetails);
+    setSkillList(initialSkillList);
+    setSelectedLayout(initialLayout);
+
+    // Clear localStorage
+    localStorage.removeItem("resumeFormData");
+    localStorage.removeItem("resumeExperiences");
+    localStorage.removeItem("resumeEducationDetails");
+    localStorage.removeItem("resumeSkillList");
+    localStorage.removeItem("resumeSelectedLayout");
+  };
+
   // Generate profile summary using AI via Supabase Edge Function
   const generateProfileSummary = async () => {
     if (
@@ -224,6 +255,7 @@ const ResumeProvider = ({ children }) => {
         generateProjectDescription,
         selectedLayout,
         setSelectedLayout: setSelectedLayoutWithStorage,
+        resetAllData,
         supabase,
       }}
     >

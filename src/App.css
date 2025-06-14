@@ -180,7 +180,16 @@ h6 {
   background-color: #9cd1ff;
   color: #333;
   border-radius: 15px;
-  border: 2px solid #2c2d2e;
+  box-sizing: border-box;
+}
+
+@media print {
+  .layout-modern {
+    border-radius: 0 !important;
+    page-break-inside: auto;
+    min-height: 100vh;
+    position: relative;
+  }
 }
 
 .layout-modern h1 {
@@ -236,7 +245,15 @@ h6 {
   font-family: "Georgia", serif;
   color: #333;
   background: #fafafa;
-  border: 1px solid #e0e0e0;
+  box-sizing: border-box;
+}
+
+@media print {
+  .layout-minimal {
+    page-break-inside: auto;
+    min-height: 100vh;
+    position: relative;
+  }
 }
 
 .layout-minimal h1 {
@@ -265,7 +282,6 @@ h6 {
 .layout-professional {
   text-align: left;
   background: #f8f9fa;
-  //border-left: 5px solid #007bff;
 }
 
 .layout-professional h1 {
@@ -380,6 +396,11 @@ h6 {
     font-size: 11px !important;
     margin-bottom: 2px !important;
     color: #212529 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .avoid-page-break {
     page-break-inside: avoid;
     break-inside: avoid;
   }

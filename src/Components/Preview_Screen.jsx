@@ -17,6 +17,7 @@ import Second_Menu_Preview from "./Second_Menu_Preview";
 import Third_Menu_Preview from "./Third_Menu_Preview";
 import Fourth_Menu_Preview from "./Fourth_Menu_Preview";
 import Fifth_Menu_Preview from "./Fifth_Menu_Preview";
+import "../App.css";
 
 const Preview_Screen = () => {
   const {
@@ -25,6 +26,7 @@ const Preview_Screen = () => {
     educationDetailsList,
     selectedLayout,
     skillList,
+    resetAllData,
   } = useContext(ResumeContext) || {};
 
   // Handle download without authentication
@@ -36,6 +38,17 @@ const Preview_Screen = () => {
   const handleDownloadWordClick = () => {
     downloadWord();
   };
+
+  // Handle clear all data
+  const handleClearAllClick = () => {
+    if (
+      window.confirm(
+        "Are you sure you want to clear all resume data? This action cannot be undone.",
+      )
+    ) {
+      resetAllData();
+    }
+  };
   const downloadPDF = () => {
     const element = document.getElementById("resume-preview");
     if (!element) {
@@ -45,98 +58,93 @@ const Preview_Screen = () => {
 
     // Clean up any existing temporary elements first
     const cleanupTempElements = () => {
-      // Remove any existing styles with the same ID
       const existingStyle = document.getElementById("pdf-temp-style");
-      if (existingStyle) {
-        existingStyle.remove();
-      }
+      if (existingStyle) existingStyle.remove();
 
-      // Remove any existing footer
       const existingFooter = element.querySelector(".pdf-footer");
-      if (existingFooter) {
-        existingFooter.remove();
-      }
+      if (existingFooter) existingFooter.remove();
 
-      // Remove any existing empty line
-      const existingEmptyLine = element.querySelector(".pdf-empty-line");
-      if (existingEmptyLine) {
-        existingEmptyLine.remove();
-      }
+      const existingEmptyLines = element.querySelectorAll(".pdf-empty-line");
+      existingEmptyLines.forEach((line) => line.remove());
     };
 
     // Clean up before starting
     cleanupTempElements();
 
-    // Add CSS styles to allow line-level page breaks and footer
+    // Add temporary style
     const style = document.createElement("style");
     style.id = "pdf-temp-style";
     style.textContent = `
-      @media print {
-        .resume-preview {
-          page-break-inside: auto;
-          padding-bottom: 60px !important;
-        }
-        .resume-section {
-          page-break-inside: auto;
-          break-inside: auto;
-        }
-        .experience-item {
-          page-break-inside: auto;
-          break-inside: auto;
-        }
-        h3, h4, h5, h6 {
-          page-break-after: auto;
-          break-after: auto;
-          orphans: 2;
-          widows: 2;
-        }
-        p, li {
-          page-break-inside: auto;
-          break-inside: auto;
-          orphans: 2;
-          widows: 2;
-        }
-        ul, ol {
-          page-break-inside: auto;
-          break-inside: auto;
-        }
-        .contact-info {
-          page-break-inside: avoid;
-          break-inside: avoid;
-        }
-        .pdf-footer {
-          position: fixed;
-          bottom: 20px;
-          left: 0;
-          right: 0;
-          text-align: center;
-          font-size: 10px;
-          color: #666;
-          z-index: 1000;
-        }
-        * {
-          orphans: 2;
-          widows: 2;
-        }
+    @media print {
+      .pdf-page-container {
+        border: 2px solid #2c2d2e;
+        padding: 20px;
+        box-sizing: border-box;
+        min-height: 100vh;
+        page-break-after: always;
+        position: relative;
       }
-    `;
+
+      .layout-minimal .pdf-page-container {
+        border: 1px solid #e0e0e0;
+      }
+
+      .resume-section, .experience-item {
+        page-break-inside: auto;
+      }
+
+      h3, h4, h5, h6, p, li, ul, ol {
+        page-break-inside: auto;
+        break-inside: auto;
+        orphans: 2;
+        widows: 2;
+      }
+
+      .contact-info {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .pdf-footer {
+        position: fixed;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 10px;
+        color: #666;
+        z-index: 1000;
+      }
+
+      * {
+        orphans: 2;
+        widows: 2;
+      }
+    }
+  `;
     document.head.appendChild(style);
 
-    // Add empty line before footer to prevent text breaking
-    const emptyLine = document.createElement("div");
-    emptyLine.className = "pdf-empty-line";
-    emptyLine.style.height = "20px";
-    emptyLine.innerHTML = "&nbsp;";
-    element.appendChild(emptyLine);
+    // Add empty lines
+    const emptyLine1 = document.createElement("div");
+    emptyLine1.className = "pdf-empty-line";
+    emptyLine1.style.height = "20px";
+    emptyLine1.innerHTML = "&nbsp;";
+    element.appendChild(emptyLine1);
 
-    // Add footer element for page numbers
+    const emptyLine2 = document.createElement("div");
+    emptyLine2.className = "pdf-empty-line";
+    emptyLine2.style.height = "20px";
+    emptyLine2.innerHTML = "&nbsp;";
+    element.appendChild(emptyLine2);
+
+    // Add footer
     const footer = document.createElement("div");
     footer.className = "pdf-footer";
     footer.innerHTML = "";
     element.appendChild(footer);
 
     const opt = {
-      margin: [0.5, 0.5, 0.8, 0.5], // Increased bottom margin for footer
+      margin: [0.5, 0.5, 0.8, 0.5],
       filename: "resume.pdf",
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: {
@@ -147,7 +155,7 @@ const Preview_Screen = () => {
         scrollX: 0,
         scrollY: 0,
         windowWidth: 794,
-        windowHeight: 1050, // Reduced height to account for footer
+        windowHeight: 1010,
       },
       jsPDF: {
         unit: "in",
@@ -172,17 +180,14 @@ const Preview_Screen = () => {
       .get("pdf")
       .then((pdf) => {
         const totalPages = pdf.internal.getNumberOfPages();
-        // Page numbering removed to fix '/' symbol issue
         return pdf;
       })
       .save()
       .then(() => {
-        // Clean up temporary elements after successful PDF generation
         cleanupTempElements();
       })
       .catch((error) => {
         console.error("PDF generation failed:", error);
-        // Clean up temporary elements on error
         cleanupTempElements();
       });
   };
@@ -461,6 +466,32 @@ const Preview_Screen = () => {
     <div className="position-relative">
       {/* Download Buttons */}
       <div className="d-flex justify-content-end mb-3 gap-2">
+        <button
+          className="btn btn-danger btn-sm shadow-sm"
+          onClick={handleClearAllClick}
+          style={{
+            borderRadius: "8px",
+            fontWeight: "500",
+            padding: "8px 16px",
+            fontSize: "0.9rem",
+            backgroundColor: "#dc3545",
+            border: "none",
+            transition: "all 0.2s ease",
+            cursor: "pointer",
+          }}
+          onMouseOver={(e) => {
+            e.target.style.backgroundColor = "#c82333";
+            e.target.style.transform = "translateY(-1px)";
+          }}
+          onMouseOut={(e) => {
+            e.target.style.backgroundColor = "#dc3545";
+            e.target.style.transform = "translateY(0)";
+          }}
+        >
+          <i className="bi bi-trash me-2"></i>
+          Clear All
+        </button>
+
         {/* Show Word download button only for minimal layout */}
         {selectedLayout === "minimal" && (
           <button
