@@ -168,7 +168,7 @@ const Main_Layout = () => {
                   fontWeight: "300",
                 }}
               >
-                &copy; 2024 Resume Builder. Developed by Selvaguru
+                &copy; 2025 Resume Builder. Developed by Selvaguru
               </p>
             </div>
           </div>
